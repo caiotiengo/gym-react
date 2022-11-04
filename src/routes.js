@@ -1,4 +1,5 @@
 import { Navigate, useRoutes } from 'react-router-dom';
+import { RequireAuth } from './hooks/useAuth'
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -15,8 +16,8 @@ import DashboardAppPage from './pages/DashboardAppPage';
 export default function Router() {
   const routes = useRoutes([
     {
-      path: '/dashboard',
-      element: <DashboardLayout />,
+      path: 'dashboard',
+      element: <RequireAuth> <DashboardLayout /> </RequireAuth>,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
