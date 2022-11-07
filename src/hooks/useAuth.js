@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Navigate} from "react-router-dom";
-import {useContext, useState} from "react";
+import {useContext} from "react";
+import PropTypes from "prop-types";
 import {AuthContext} from './AuthProvider'
 
 export const useAuth = () => {
@@ -18,9 +19,11 @@ export const useAuth = () => {
 export const RequireAuth = ({children}) => {
     const {authed} = useAuth()
 
-    console.log(authed)
-
     if (authed) return children
 
     return <Navigate to="/login" replace/>
+}
+
+RequireAuth.propTypes = {
+    children: PropTypes.node.isRequired
 }

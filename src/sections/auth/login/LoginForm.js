@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 // @mui
-import {Link, Stack, IconButton, InputAdornment, TextField, Checkbox} from '@mui/material';
+import {Stack, IconButton, InputAdornment, TextField, Snackbar} from '@mui/material';
 import {LoadingButton} from '@mui/lab';
 import {useAuth} from '../../../hooks/useAuth'
 // components
@@ -14,22 +14,33 @@ export default function LoginForm() {
     const navigate = useNavigate();
     const { login } = useAuth()
     const [showPassword, setShowPassword] = useState(false);
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleClick = async () => {
-        await login()
+        const { error } = await login(email, password)
+
+        if(error) {
+            setErrorMessage(error)
+            setErrorModalOpen(true)
+            return
+        }
 
         navigate('/dashboard', {replace: true});
     };
 
     return (
         <>
-            <Stack spacing={3}>
-                <TextField name="email" label="Email address"/>
+            <Stack spacing={3}  sx={{my: 2}}>
+                <TextField onChange={(e) => setEmail(e.target.value)} name="email" label="Email address"/>
 
                 <TextField
                     name="password"
                     label="Password"
                     type={showPassword ? 'text' : 'password'}
+                    onChange={(e) => setPassword(e.target.value)}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -42,16 +53,10 @@ export default function LoginForm() {
                 />
             </Stack>
 
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{my: 2}}>
-                <Checkbox name="remember" label="Remember me"/>
-                <Link variant="subtitle2" underline="hover">
-                    Forgot password?
-                </Link>
-            </Stack>
-
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
                 Login
             </LoadingButton>
+            <Snackbar open={errorModalOpen} onClose={() => setErrorModalOpen(false)} autoHideDuration={5000} message={errorMessage}/>
         </>
     );
 }
