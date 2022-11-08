@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
+import {useNavigate} from "react-router-dom";
 import account from '../../../_mock/account';
+import {useAuth} from "../../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -25,14 +27,18 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const navigate = useNavigate()
   const [open, setOpen] = useState(null);
+  const { logout } = useAuth()
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
   const handleClose = () => {
+    logout()
     setOpen(null);
+    navigate('/login', {replace: true})
   };
 
   return (
