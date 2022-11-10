@@ -1,30 +1,31 @@
 // component
-import SvgColor from '../../../components/svg-color';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import KeyIcon from '@mui/icons-material/Key';
 
 // ----------------------------------------------------------------------
 
-const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
-
 const navConfig = [
   {
-    title: 'dashboard',
-    path: '/dashboard/app',
-    icon: icon('ic_analytics'),
+    title: 'Alunos',
+    path: '/dashboard/students',
+    icon: <AccountBoxIcon />,
   },
   {
-    title: 'user',
-    path: '/dashboard/user',
-    icon: icon('ic_user'),
+    title: 'Relatórios',
+    path: '/dashboard/reports',
+    icon: <ContactMailIcon />,
   },
   {
-    title: 'product',
-    path: '/dashboard/products',
-    icon: icon('ic_cart'),
+    title: 'Agenda',
+    path: '/dashboard/agenda',
+    icon: <EventAvailableIcon />,
   },
   {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: icon('ic_blog'),
+    title: 'Catraca',
+    path: '/dashboard/gate',
+    icon: <KeyIcon />,
   },
 ];
 
