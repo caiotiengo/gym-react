@@ -13,15 +13,8 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+    route: '/'
+  }
 ];
 
 // ----------------------------------------------------------------------
@@ -29,18 +22,22 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(null);
-  const { logout } = useAuth()
+  const { user: { name, email, image }, logout } = useAuth()
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
   const handleClose = () => {
+    setOpen(null);
+  };
+
+  const handleLogout = () => {
     logout()
     setOpen(null);
     navigate('/login', {replace: true})
-  };
-
+  }
+  
   return (
     <>
       <IconButton
@@ -60,7 +57,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={image || account.photoURL} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -82,20 +79,20 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            {account.displayName}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
-          </Typography>
+        <Box sx={{my: 1.5, px: 2.5}}>
+          {name && <Typography variant="subtitle2" noWrap>
+            {name}
+          </Typography>}
+          {email && <Typography variant="body2" sx={{color: 'text.secondary'}} noWrap>
+            {email}
+          </Typography>}
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} onClick={() => navigate(option.route)}>
               {option.label}
             </MenuItem>
           ))}
@@ -103,7 +100,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>
