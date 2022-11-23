@@ -14,9 +14,10 @@ import {
   Container,
   Typography,
   IconButton,
-  TableContainer,
+  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions,
 } from '@mui/material';
 // components
+import PropTypes from "prop-types";
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
@@ -26,6 +27,7 @@ import USERLIST from '../_mock/user';
 import useStudents from "../hooks/students/useStudents";
 import Label from "../components/label";
 import NewUserModal from "../components/new-user-modal";
+import useStudent from "../hooks/student/useStudent";
 
 // ----------------------------------------------------------------------
 
@@ -35,16 +37,44 @@ const TABLE_HEAD = [
   {id: 'genero', label: 'Gênero', alignRight: false},
   {id: 'telefone', label: 'Telefone', alignRight: false},
   {id: 'email', label: 'E-mail', alignRight: false},
+  {id: 'status', label: 'Status', alignRight: false},
   {id: ''},
 ];
 
 // ----------------------------------------------------------
 
+const StatusLabel = (props) => {
+  const {status = ''} = props
+  const statusLookup = {
+    '': {
+      color: 'warning',
+      text: 'Novo aluno'
+    },
+    'pago': {
+      color: 'success',
+      text: 'Em dia'
+    },
+    'atraso': {
+      color: 'error',
+      text: 'Pendente'
+    }
+  }
+  
+  return (
+    <Label color={statusLookup[status].color}>{statusLookup[status].text}</Label>
+  )
+}
+
+StatusLabel.propTypes = {
+  status: PropTypes.string
+}
+
 export default function UserPage() {
   const [open, setOpen] = useState(null);
   const [openModal, setOpenModal] = useState(false)
-
-  const {students} = useStudents()
+  const {students, removeStudent} = useStudents()
+  const {setStudent} = useStudent()
+  const [currentStudent, setCurrentStudent] = useState()
   
   const handleOpenModal = () => {
     setOpenModal(true)
@@ -54,7 +84,8 @@ export default function UserPage() {
     setOpenModal(false)
   }
   
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event, index) => {
+    setCurrentStudent(students[index])
     setOpen(event.currentTarget);
   };
   
@@ -62,7 +93,30 @@ export default function UserPage() {
     setOpen(null);
   };
   
-  const emptyRows = students > 0 ? Math.max(0, (1 + students)) : 0;
+  const handleEdit = () => {
+    setStudent({
+      ...currentStudent,
+      newStudent: false
+    })
+    setOpenModal(true)
+    setOpen(null)
+  }
+  
+  const [openDelete, setOpenDelete] = useState(false);
+  
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+    setOpen(null)
+  };
+  
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+  
+  const handleRemove = () => {
+    removeStudent(currentStudent.id)
+    setOpen(null)
+  }
   
   return (
     <>
@@ -76,7 +130,8 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Alunos
           </Typography>
-          <Button sx={{alignSelf: 'right'}} onClick={handleOpenModal} variant="contained" startIcon={<Iconify icon="eva:plus-fill"/>}>
+          <Button sx={{alignSelf: 'right'}} onClick={handleOpenModal} variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill"/>}>
             Adicionar aluno
           </Button>
         </Stack>
@@ -90,43 +145,53 @@ export default function UserPage() {
                   rowCount={USERLIST.length}
                 />
                 <TableBody>
-                  {students.map((row) => {
-                    const {id, nome, telefone, email, genero, idade} = row;
-                    
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox">
-                        <TableCell component="th" scope="row">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Typography variant="subtitle2" noWrap>
-                              {nome}
+                  {
+                    students.length
+                      ? students.map((row, index) => {
+                        const {id, nome, telefone, email, genero, idade, status} = row;
+                        
+                        return (
+                          <TableRow hover key={id} tabIndex={-1} role="checkbox">
+                            <TableCell component="th" scope="row">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <Typography variant="subtitle2" noWrap>
+                                  {nome}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                            
+                            <TableCell align="left">{idade}</TableCell>
+                            
+                            <TableCell align="left">
+                              {genero === 'f' ? 'Feminino' : 'Masculino'}
+                            </TableCell>
+                            
+                            <TableCell align="left">{telefone}</TableCell>
+                            
+                            <TableCell align="left">{email}</TableCell>
+                            
+                            <TableCell align="left">
+                              <StatusLabel status={status}/>
+                            </TableCell>
+                            
+                            <TableCell align="right">
+                              <IconButton size="large" color="inherit" onClick={(e) => handleOpenMenu(e, index)}>
+                                <Iconify icon={'eva:more-vertical-fill'}/>
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                      : (
+                        <TableRow>
+                          <TableCell colSpan={6}>
+                            <Typography  gutterBottom>
+                              Nenhum aluno ainda...
                             </Typography>
-                          </Stack>
-                        </TableCell>
-                        
-                        <TableCell align="left">{idade}</TableCell>
-                        
-                        <TableCell align="left">
-                          <Label
-                            color={(genero === 'f' && 'primary') || 'secondary'}>{genero === 'f' ? 'Feminino' : 'Masculino'}</Label>
-                        </TableCell>
-                        
-                        <TableCell align="left">{telefone}</TableCell>
-                        
-                        <TableCell align="left">{email}</TableCell>
-                        
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'}/>
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{height: 53 * emptyRows}}>
-                      <TableCell colSpan={6}/>
-                    </TableRow>
-                  )}
+                          </TableCell>
+                        </TableRow>
+                      )
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
@@ -152,16 +217,29 @@ export default function UserPage() {
           },
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleEdit}>
           <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
           Edit
         </MenuItem>
         
-        <MenuItem sx={{color: 'error.main'}}>
+        <MenuItem onClick={handleOpenDelete} sx={{color: 'error.main'}}>
           <Iconify icon={'eva:trash-2-outline'} sx={{mr: 2}}/>
           Delete
         </MenuItem>
       </Popover>
+  
+      <Dialog open={openDelete} onClose={handleCloseDelete}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja remover {currentStudent?.nome} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>Cancel</Button>
+          <Button onClick={handleRemove}>Remover {currentStudent?.nome}</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

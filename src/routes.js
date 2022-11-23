@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import {StudentsProvider} from "./hooks/students/StudentsProvider";
+import {StudentProvider} from "./hooks/student/StudentProvider";
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,7 @@ export default function Router() {
       element: <RequireAuth> <DashboardLayout /> </RequireAuth>,
       children: [
         { element: <Navigate to="/dashboard/students" />, index: true },
-        { path: 'students', element: <StudentsProvider><UserPage /></StudentsProvider> },
+        { path: 'students', element: <StudentsProvider><StudentProvider><UserPage /></StudentProvider></StudentsProvider> },
         { path: 'reports', element: <StudentsProvider><UserPage /></StudentsProvider> },
         { path: 'agenda', element: <ProductsPage /> },
         { path: 'gate', element: <BlogPage /> },

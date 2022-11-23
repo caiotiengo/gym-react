@@ -3,11 +3,11 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DesktopDatePicker, MobileDatePicker} from "@mui/x-date-pickers";
 import {forwardRef, useState} from "react";
-import dayjs from "dayjs";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 import { IMaskInput } from 'react-imask';
 import useStudents from "../../hooks/students/useStudents";
+import useStudent from "../../hooks/student/useStudent";
 
 const modalStyle = {
   position: 'absolute',
@@ -49,7 +49,7 @@ const TelefoneMaskInput = forwardRef((props, ref) => {
 });
 
 TelefoneMaskInput.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 };
 
@@ -70,21 +70,30 @@ const DocumentMaskInput = forwardRef((props, ref) => {
 });
 
 DocumentMaskInput.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 };
 
 const NewUserModal = (props) => {
   const { open, handleClose } = props
-  const [currentGender, setCurrentGender] = useState('m')
-  const [birthdate, setBirthdate] = useState(dayjs())
   const matches = useMediaQuery('(min-width: 600px)')
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [idade, setIdade] = useState('')
-  const [telefone, setTelefone] = useState('')
-  const [documento, setDocumento] = useState('')
-  const [endereco, setEndereco] = useState('')
+  const {
+    student,
+    setStudent,
+    resetValues
+  } = useStudent()
+  const {
+    newStudent,
+    id,
+    nome,
+    email,
+    idade,
+    telefone,
+    documento,
+    endereco,
+    aniversario,
+    genero
+  } = student
   const validateInitialValues = {
     nome: '',
     email: '',
@@ -94,6 +103,7 @@ const NewUserModal = (props) => {
     endereco: '',
   }
   const [validate, setValidate] = useState(validateInitialValues)
+  
   const validateNome = (value) => {
     if(value === '') {
       setValidate({...validate, nome: 'Preencha seu nome'})
@@ -149,19 +159,7 @@ const NewUserModal = (props) => {
   const resetValidate = () => {
     setValidate({})
   }
-  const { addStudent } = useStudents()
-  
-  const resetValues = () => {
-    setCurrentGender('')
-    setBirthdate(dayjs())
-    setNome('')
-    setEmail('')
-    setIdade('')
-    setTelefone('')
-    setDocumento('')
-    setEndereco('')
-    resetValidate()
-  }
+  const { addStudent, editStudent } = useStudents()
   
   const handleSubmit = async () => {
     resetValidate()
@@ -172,18 +170,11 @@ const NewUserModal = (props) => {
     if(!validateDocumento(documento)) return
     if(!validateEndereco(endereco)) return
     
-    const student = {
-      nome,
-      email,
-      idade,
-      telefone,
-      documento,
-      endereco,
-      birthdate: birthdate.format(),
-      genero: currentGender
+    if(newStudent) {
+      await addStudent(student)
+    } else {
+      await editStudent(student)
     }
-  
-    await addStudent(student)
     resetValues()
     resetValidate()
     handleClose()
@@ -220,7 +211,7 @@ const NewUserModal = (props) => {
                 value={nome}
                 onChange={(e) => {
                   setValidate({...validate, nome: ''})
-                  setNome(e.target.value)
+                  setStudent({...student, nome: e.target.value})
                 }}
               />
               <TextField
@@ -232,7 +223,7 @@ const NewUserModal = (props) => {
                 value={email}
                 onChange={(e) => {
                   setValidate({...validate, email: ''})
-                  setEmail(e.target.value)
+                  setStudent({...student, email: e.target.value})
                 }}
               />
               <TextField
@@ -248,7 +239,7 @@ const NewUserModal = (props) => {
                 helperText={validate.idade}
                 onChange={(e) => {
                   setValidate({...validate, idade: ''})
-                  setIdade(e.target.value)
+                  setStudent({...student, idade: e.target.value})
                 }}
               />
               <TextField
@@ -261,7 +252,7 @@ const NewUserModal = (props) => {
                 helperText={validate.telefone}
                 onChange={(e) => {
                   setValidate({...validate, telefone: ''})
-                  setTelefone(e.target.value)
+                  setStudent({...student, telefone: e.target.value})
                 }}
                 InputProps={{
                   inputComponent: TelefoneMaskInput,
@@ -277,7 +268,7 @@ const NewUserModal = (props) => {
                 helperText={validate.documento}
                 onChange={(e) => {
                   setValidate({...validate, documento: ''})
-                  setDocumento(e.target.value)
+                  setStudent({...student, documento: e.target.value})
                 }}
                 InputProps={{
                   inputComponent: DocumentMaskInput
@@ -293,14 +284,14 @@ const NewUserModal = (props) => {
                 helperText={validate.endereco}
                 onChange={(e) => {
                   setValidate({...validate, endereco: ''})
-                  setEndereco(e.target.value)
+                  setStudent({...student, endereco: e.target.value})
                 }}
               />
               <TextField
                 select
                 label='Gênero'
-                value={currentGender}
-                onChange={(e) => setCurrentGender(e.target.value)}
+                value={genero}
+                onChange={(e) => setStudent({...student, genero:e.target.value})}
               >
                 {gender.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -312,15 +303,17 @@ const NewUserModal = (props) => {
                 ? <DesktopDatePicker
                   label="Data de Nascimento"
                   inputFormat="DD/MM/YYYY"
-                  value={birthdate}
-                  onChange={(e) => setBirthdate(e)}
+                  value={aniversario}
+                  onChange={(e) => {
+                    setStudent({...student, aniversario: e.format()})
+                  }}
                   renderInput={(params) => <TextField {...params} />}
                 />
                 : <MobileDatePicker
                   label="Data de Nascimento"
                   inputFormat="DD/MM/YYYY"
-                  value={birthdate}
-                  onChange={(e) => setBirthdate(e)}
+                  value={aniversario}
+                  onChange={(e) => setStudent({...student, aniversario: e.format()})}
                   renderInput={(params) => <TextField {...params} />}
                 />}
               <Stack direction="row" justifyContent='right' width='100%'>

@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore'
+import { collection, query, where, getDocs, addDoc, doc, updateDoc, deleteDoc  } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 
 const usersCollection = collection(db, "usuarios")
@@ -17,6 +17,19 @@ export const getStudents = async () => {
 export const addStudent = async (student) => {
   await addDoc(usersCollection, {
     ...student,
-    admin: false
+    admin: false,
+    status: ''
   })
+}
+
+export const updateStudent = async (student) => {
+  const studentRef = doc(db, 'usuarios', student.id)
+  
+  await updateDoc(studentRef, student)
+}
+
+export const deleteStudent = async (id) => {
+  const studentRef = doc(db, 'usuarios', id)
+  
+  await deleteDoc(studentRef)
 }
