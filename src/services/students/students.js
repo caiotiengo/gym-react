@@ -15,10 +15,8 @@ export const getStudents = async () => {
 }
 
 export const addStudent = async (student) => {
-  const docRef = await addDoc(usersCollection, {
+  await addDoc(usersCollection, {
     ...student,
     admin: false
   })
-  
-  console.log(docRef.id)
 }
