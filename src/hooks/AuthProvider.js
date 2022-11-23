@@ -1,21 +1,38 @@
 import * as React from "react";
-import {createContext, useMemo, useState} from "react";
+import {createContext, useEffect, useMemo, useState} from "react";
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import PropTypes from "prop-types";
 import { app } from '../utils/firebase'
+import {getUserInLocalStorage, setUserInLocalStorege} from "../utils/authLocalStorage";
 
 const auth = getAuth(app)
 
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
-    const [authed, setAuthed] = useState(false);
-
-
+    const [user, setUser] = useState({});
+    
+    useEffect(() => {
+        const currentUser = getUserInLocalStorage()
+        
+        if(currentUser) setUser(currentUser)
+    }, [])
+    
     const login = async (email, password) => {
+        let currentUser = {};
+        
         try {
-            await signInWithEmailAndPassword(auth, email, password)
-
-            setAuthed(true)
+            const userInLocalStorage = getUserInLocalStorage()
+            
+            if(userInLocalStorage) {
+                currentUser = userInLocalStorage
+            }
+            
+            const { user } = await signInWithEmailAndPassword(auth, email, password)
+    
+            currentUser = { name: user?.displayName, email: user?.email, image: user?.photoURL }
+            
+            setUserInLocalStorege(currentUser)
+            setUser(currentUser)
             return true
         } catch (e) {
             return {
@@ -26,12 +43,13 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         await signOut(auth)
-        setAuthed(false);
+        setUserInLocalStorege({})
+        setUser({});
     }
 
     const contextValue = useMemo(
-        () => ({ authed, login, logout }),
-        [authed]
+        () => ({ user, login, logout }),
+        [user]
     );
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
