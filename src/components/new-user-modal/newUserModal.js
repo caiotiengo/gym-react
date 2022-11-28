@@ -187,7 +187,7 @@ const NewUserModal = (props) => {
     >
       <Box sx={modalStyle}>
         <Typography variant="h3">
-          Adicionar usuário
+          { newStudent ? 'Atualizar' : 'Adicionar'} usuário
         </Typography>
         <Paper>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
