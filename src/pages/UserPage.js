@@ -14,7 +14,7 @@ import {
   Container,
   Typography,
   IconButton,
-  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions,
+  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
 } from '@mui/material';
 // components
 import PropTypes from "prop-types";
@@ -73,10 +73,11 @@ export default function UserPage() {
   const [open, setOpen] = useState(null);
   const [openModal, setOpenModal] = useState(false)
   const {students, removeStudent} = useStudents()
-  const {setStudent} = useStudent()
+  const {setStudent, resetValues} = useStudent()
   const [currentStudent, setCurrentStudent] = useState()
   
   const handleOpenModal = () => {
+    resetValues()
     setOpenModal(true)
   }
   

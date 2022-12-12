@@ -1,11 +1,20 @@
-import {Box, Button, MenuItem, Modal, Paper, Stack, TextField, Typography} from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Modal,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DesktopDatePicker, MobileDatePicker} from "@mui/x-date-pickers";
 import {forwardRef, useState} from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
-import { IMaskInput } from 'react-imask';
+import {IMaskInput} from 'react-imask';
 import useStudents from "../../hooks/students/useStudents";
 import useStudent from "../../hooks/student/useStudent";
 
@@ -33,7 +42,7 @@ const gender = [
 ]
 
 const TelefoneMaskInput = forwardRef((props, ref) => {
-  const { onChange, ...other } = props;
+  const {onChange, ...other} = props;
   return (
     <IMaskInput
       {...other}
@@ -42,7 +51,7 @@ const TelefoneMaskInput = forwardRef((props, ref) => {
         '#': /[1-9]/,
       }}
       inputRef={ref}
-      onAccept={(value) => onChange({ target: { name: props.name, value } })}
+      onAccept={(value) => onChange({target: {name: props.name, value}})}
       overwrite
     />
   );
@@ -54,7 +63,7 @@ TelefoneMaskInput.propTypes = {
 };
 
 const DocumentMaskInput = forwardRef((props, ref) => {
-  const { onChange, ...other } = props;
+  const {onChange, ...other} = props;
   return (
     <IMaskInput
       {...other}
@@ -63,7 +72,7 @@ const DocumentMaskInput = forwardRef((props, ref) => {
         '#': /[1-9]/,
       }}
       inputRef={ref}
-      onAccept={(value) => onChange({ target: { name: props.name, value } })}
+      onAccept={(value) => onChange({target: {name: props.name, value}})}
       overwrite
     />
   );
@@ -75,7 +84,7 @@ DocumentMaskInput.propTypes = {
 };
 
 const NewUserModal = (props) => {
-  const { open, handleClose } = props
+  const {open, handleClose} = props
   const matches = useMediaQuery('(min-width: 600px)')
   const {
     student,
@@ -84,7 +93,6 @@ const NewUserModal = (props) => {
   } = useStudent()
   const {
     newStudent,
-    id,
     nome,
     email,
     idade,
@@ -92,8 +100,10 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
-    genero
+    genero,
+    status
   } = student
+  
   const validateInitialValues = {
     nome: '',
     email: '',
@@ -101,25 +111,26 @@ const NewUserModal = (props) => {
     telefone: '',
     documento: '',
     endereco: '',
+    status: ''
   }
   const [validate, setValidate] = useState(validateInitialValues)
   
   const validateNome = (value) => {
-    if(value === '') {
+    if (value === '') {
       setValidate({...validate, nome: 'Preencha seu nome'})
       return false
     }
     return true
   }
   const validateEmail = (value) => {
-    if(value === '') {
+    if (value === '') {
       setValidate({...validate, email: 'Preencha seu email'})
       return false
     }
     return true
   }
   const validateIdade = (value) => {
-    if(value === '') {
+    if (value === '') {
       setValidate({...validate, idade: 'Preencha sua idade'})
       return false
     }
@@ -127,11 +138,11 @@ const NewUserModal = (props) => {
   }
   const validateTelefone = (value) => {
     const formattedValue = value.replace(/\D/g, '')
-    if(formattedValue === '') {
+    if (formattedValue === '') {
       setValidate({...validate, telefone: 'Preencha seu telefone'})
       return false
     }
-    if(formattedValue.length < 11) {
+    if (formattedValue.length < 11) {
       setValidate({...validate, telefone: 'Telefone está faltando dígitos...'})
       return false
     }
@@ -139,18 +150,18 @@ const NewUserModal = (props) => {
   }
   const validateDocumento = (value) => {
     const formattedValue = value.replace(/\D/g, '')
-    if(formattedValue === '') {
+    if (formattedValue === '') {
       setValidate({...validate, documento: 'Preencha seu documento de CPF'})
       return false
     }
-    if(formattedValue.length < 11) {
+    if (formattedValue.length < 11) {
       setValidate({...validate, documento: 'Documento inválido...'})
       return false
     }
     return true
   }
   const validateEndereco = (value) => {
-    if(value === '') {
+    if (value === '') {
       setValidate({...validate, endereco: 'Preencha seu endereço'})
       return false
     }
@@ -159,18 +170,18 @@ const NewUserModal = (props) => {
   const resetValidate = () => {
     setValidate({})
   }
-  const { addStudent, editStudent } = useStudents()
+  const {addStudent, editStudent} = useStudents()
   
   const handleSubmit = async () => {
     resetValidate()
-    if(!validateNome(nome)) return
-    if(!validateEmail(email)) return
-    if(!validateIdade(idade)) return
-    if(!validateTelefone(telefone)) return
-    if(!validateDocumento(documento)) return
-    if(!validateEndereco(endereco)) return
+    if (!validateNome(nome)) return
+    if (!validateEmail(email)) return
+    if (!validateIdade(idade)) return
+    if (!validateTelefone(telefone)) return
+    if (!validateDocumento(documento)) return
+    if (!validateEndereco(endereco)) return
     
-    if(newStudent) {
+    if (newStudent) {
       await addStudent(student)
     } else {
       await editStudent(student)
@@ -187,7 +198,7 @@ const NewUserModal = (props) => {
     >
       <Box sx={modalStyle}>
         <Typography variant="h3">
-          { newStudent ? 'Atualizar' : 'Adicionar'} usuário
+          {newStudent ? 'Atualizar' : 'Adicionar'} usuário
         </Typography>
         <Paper>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -202,6 +213,21 @@ const NewUserModal = (props) => {
               noValidate
               autoComplete="off"
             >
+              {
+                !newStudent &&
+                (<TextField
+                  id="status"
+                  label="Status"
+                  value={status}
+                  select
+                  onChange={(e) => {
+                    setStudent({...student, status: e.target.value})
+                  }}
+                >
+                  <MenuItem value="atraso">Atrasado</MenuItem>
+                  <MenuItem value="pago">Pago</MenuItem>
+                </TextField>)
+              }
               <TextField
                 error={Boolean(validate.nome)}
                 helperText={validate.nome}
@@ -291,7 +317,7 @@ const NewUserModal = (props) => {
                 select
                 label='Gênero'
                 value={genero}
-                onChange={(e) => setStudent({...student, genero:e.target.value})}
+                onChange={(e) => setStudent({...student, genero: e.target.value})}
               >
                 {gender.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

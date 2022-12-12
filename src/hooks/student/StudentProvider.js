@@ -12,6 +12,7 @@ export const StudentProvider = (props) => {
     telefone: '',
     documento: '',
     endereco: '',
+    status: '',
     aniversario: dayjs(),
     genero: 'm',
     newStudent: true
@@ -26,6 +27,7 @@ export const StudentProvider = (props) => {
     student,
     setStudent,
     resetValues
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [student])
   
   return <StudentsContext.Provider value={values}>{children}</StudentsContext.Provider>
