@@ -1195,6 +1195,11 @@
   resolved "https://registry.npmjs.org/@csstools/selector-specificity/-/selector-specificity-2.0.2.tgz"
   integrity sha512-IkpVW/ehM1hWKln4fCA3NzJU8KwD+kIOvPZA4cqxoJHtE21CCzjyp+Kxbu0i5I4tBNOlXPL9mjwnWlL0VEG4Fg==
 
+"@date-io/core@^1.3.13":
+  version "1.3.13"
+  resolved "https://registry.yarnpkg.com/@date-io/core/-/core-1.3.13.tgz#90c71da493f20204b7a972929cc5c482d078b3fa"
+  integrity sha512-AlEKV7TxjeK+jxWVKcCFrfYAk8spX9aCyiToFIiLPtfQbsjmRGLIhb5VZgptQcJdHtLXo7+m0DuurwFgUToQuA==
+
 "@date-io/core@^2.15.0", "@date-io/core@^2.16.0":
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/@date-io/core/-/core-2.16.0.tgz#7871bfc1d9bca9aa35ad444a239505589d0f22f6"
@@ -1221,12 +1226,56 @@
   dependencies:
     "@date-io/core" "^2.16.0"
 
+"@date-io/moment@^1.3.11":
+  version "1.3.13"
+  resolved "https://registry.yarnpkg.com/@date-io/moment/-/moment-1.3.13.tgz#56c2772bc4f6675fc6970257e6033e7a7c2960f0"
+  integrity sha512-3kJYusJtQuOIxq6byZlzAHoW/18iExJer9qfRF5DyyzdAk074seTuJfdofjz4RFfTd/Idk8WylOQpWtERqvFuQ==
+  dependencies:
+    "@date-io/core" "^1.3.13"
+
 "@date-io/moment@^2.15.0":
   version "2.16.1"
   resolved "https://registry.yarnpkg.com/@date-io/moment/-/moment-2.16.1.tgz#ec6e0daa486871e0e6412036c6f806842a0eeed4"
   integrity sha512-JkxldQxUqZBfZtsaCcCMkm/dmytdyq5pS1RxshCQ4fHhsvP5A7gSqPD22QbVXMcJydi3d3v1Y8BQdUKEuGACZQ==
   dependencies:
     "@date-io/core" "^2.16.0"
+
+"@devexpress/dx-core@3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-3.0.6.tgz#d30f1cb883fc47fabe83f0cf4c9691b9e5c4a732"
+  integrity sha512-Qx66s+fi1aylQr+Li6OXtUOF5t4zJkYAMN1oM7rua9iJI4raoKBm5aRuYpW0ZLMChJzBAqOHfRpICKbX/QNE4Q==
+
+"@devexpress/dx-react-core@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-3.0.6.tgz#85d3cccfc53d172626ec624d24c6063bb76c8564"
+  integrity sha512-cKH3PknwFbJp2R9Du8+DhvN4gHlZtz0UxCBcXhpvXncLHdwYV3kkwmXrFaG5lfHQBSzVSIg8XkSN5dBXZELAPA==
+  dependencies:
+    "@devexpress/dx-core" "3.0.6"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-scheduler-material-ui@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler-material-ui/-/dx-react-scheduler-material-ui-3.0.6.tgz#62ac58ffd2aa021d9c7270b296e1b9a55183202e"
+  integrity sha512-ubtAzmC/WngpYR8TQrFk3d24Urt+GERK/5imgo3aJmiks2ZlSYwxISRGJNE1tLRo4WxGe0BT0RiQHHr7Z3JoCw==
+  dependencies:
+    "@date-io/moment" "^1.3.11"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-scheduler@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler/-/dx-react-scheduler-3.0.6.tgz#25b2da1de64ae62a99115cc25ace26010b0e41ba"
+  integrity sha512-mtGb2yJwyvWVd+yKwQfN/pM+flXexMTvaewrSJPKOV48MIaoKpL1pbJCPkLKLHWAWXchlUKp/qPEgB7adimDAg==
+  dependencies:
+    "@devexpress/dx-scheduler-core" "3.0.6"
+
+"@devexpress/dx-scheduler-core@3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-scheduler-core/-/dx-scheduler-core-3.0.6.tgz#51f9c6ee9cc74d088b1117aa43ebc4e592a53ee5"
+  integrity sha512-/6PgTsfHk+hZUQVn0Nw0xfmwM8dA5RRcdAQf99AAv9tyxJgAInE9c+BJTeox4InybVvfvIZkJdQHLtD4tqRsAQ==
+  dependencies:
+    moment "^2.24.0"
+    rrule "2.6.4"
 
 "@emotion/babel-plugin@^11.10.0":
   version "11.10.2"
@@ -3864,6 +3913,11 @@ cjs-module-lexer@^1.0.0:
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.2.2.tgz"
   integrity sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==
 
+classnames@^2.2.6:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
 clean-css@^5.2.2:
   version "5.3.1"
   resolved "https://registry.npmjs.org/clean-css/-/clean-css-5.3.1.tgz"
@@ -3880,7 +3934,7 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-clsx@^1.2.1:
+clsx@^1.0.4, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
@@ -4089,6 +4143,14 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
+
+create-react-class@^15.5.2:
+  version "15.7.0"
+  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.7.0.tgz#7499d7ca2e69bb51d13faf59bd04f0c65a1d6c1e"
+  integrity sha512-QZv4sFWG9S5RUvkTYWbflxeZX+JG7Cz0Tn33rQBJ+WFQTqTfUTjMjiv9tnfXazjsO5r0KhPs+AqCjyrQX6h2ng==
+  dependencies:
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -4569,6 +4631,10 @@ dotenv@^10.0.0:
   version "10.0.0"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-10.0.0.tgz"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+
+"drag-drop-touch-polyfill@https://github.com/Revln9/drag-drop-touch-polyfill-ES5-compiled.git":
+  version "1.0.0"
+  resolved "https://github.com/Revln9/drag-drop-touch-polyfill-ES5-compiled.git#9149472c1256683d86b388043fe8fd44a834d825"
 
 duplexer@^0.1.2:
   version "0.1.2"
@@ -6882,7 +6948,7 @@ long@^5.0.0:
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.1.tgz#e27595d0083d103d2fa2c20c7699f8e0c92b897f"
   integrity sha512-GKSNGeNAtw8IryjjkhZxuKB3JzlcLTwjtiQCHKvqQet81I93kXslhDQruGI/QsddO83mcDToBVy7GqGS/zYf/A==
 
-loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
+loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -6902,6 +6968,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+luxon@^1.21.3:
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
+  integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
 
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.9"
@@ -7041,6 +7112,11 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.6"
 
+moment@^2.24.0, moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
@@ -7159,6 +7235,11 @@ nwsapi@^2.2.0:
   version "2.2.2"
   resolved "https://registry.npmjs.org/nwsapi/-/nwsapi-2.2.2.tgz"
   integrity sha512-90yv+6538zuvUMnN+zCr8LuV6bPFdq50304114vJYJ8RDyK8D5O9Phpbd6SZWgI7PwzmmfN1upeOJlvybDSgCw==
+
+object-assign@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
+  integrity sha512-jHP15vXVGeVh1HuaA2wY6lxk+whK/x4KBG88VXeRma7CCun7iGD5qPc4eYykQ9sdQvg8jkwFKsSxHln2ybW3xQ==
 
 object-assign@^4.1.1:
   version "4.1.1"
@@ -8228,6 +8309,16 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-agenda@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/react-agenda/-/react-agenda-0.0.8.tgz#1af24aa3a8ebdddc0017b6a97b219d0fc64a60a7"
+  integrity sha512-04QjUUh2XOzroQU/RN4rUlXZLmJa14L6JBrcdOcYGMqQUZKytbe2JwZONQjx31IkmZt4aQHgc9KgqbSm8Kq37A==
+  dependencies:
+    classnames "^2.2.6"
+    drag-drop-touch-polyfill "https://github.com/Revln9/drag-drop-touch-polyfill-ES5-compiled.git"
+    prop-types "^15.6.2"
+    react-datetime "^2.16.3"
+
 react-apexcharts@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/react-apexcharts/-/react-apexcharts-1.4.0.tgz"
@@ -8246,6 +8337,16 @@ react-app-polyfill@^3.0.0:
     raf "^3.4.1"
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
+
+react-datetime@^2.16.3:
+  version "2.16.3"
+  resolved "https://registry.yarnpkg.com/react-datetime/-/react-datetime-2.16.3.tgz#7f9ac7d4014a939c11c761d0c22d1fb506cb505e"
+  integrity sha512-amWfb5iGEiyqjLmqCLlPpu2oN415jK8wX1qoTq7qn6EYiU7qQgbNHglww014PT4O/3G5eo/3kbJu/M/IxxTyGw==
+  dependencies:
+    create-react-class "^15.5.2"
+    object-assign "^3.0.0"
+    prop-types "^15.5.7"
+    react-onclickoutside "^6.5.0"
 
 react-dev-utils@^12.0.1:
   version "12.0.1"
@@ -8333,6 +8434,11 @@ react-is@^18.0.0, react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-onclickoutside@^6.5.0:
+  version "6.12.2"
+  resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.12.2.tgz#8e6cf80c7d17a79f2c908399918158a7b02dda01"
+  integrity sha512-NMXGa223OnsrGVp5dJHkuKxQ4czdLmXSp5jSV9OqiCky9LOpPATn3vLldc+q5fK3gKbEHvr7J1u0yhBh/xYkpA==
 
 react-refresh@^0.11.0:
   version "0.11.0"
@@ -8661,6 +8767,15 @@ rollup@^2.43.1:
   integrity sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==
   optionalDependencies:
     fsevents "~2.3.2"
+
+rrule@2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/rrule/-/rrule-2.6.4.tgz#7f4f31fda12bc7249bb176c891109a9bc448e035"
+  integrity sha512-sLdnh4lmjUqq8liFiOUXD5kWp/FcnbDLPwq5YAc/RrN6120XOPb86Ae5zxF7ttBVq8O3LxjjORMEit1baluahA==
+  dependencies:
+    tslib "^1.10.0"
+  optionalDependencies:
+    luxon "^1.21.3"
 
 run-parallel@^1.1.9:
   version "1.2.0"
@@ -9524,7 +9639,7 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.8.1:
+tslib@^1.10.0, tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

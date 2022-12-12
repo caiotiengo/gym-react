@@ -1,6 +1,6 @@
 import {useContext} from "react";
 import {StudentsContext} from "./StudentsProvider";
-import {addStudent, deleteStudent, updateStudent} from "../../services/students";
+import {addStudent, deleteStudent, suggestStudent, updateStudent} from "../../services/students";
 
 export default function useStudents()  {
   const { students, fetchStudents } = useContext(StudentsContext)
@@ -18,10 +18,13 @@ export default function useStudents()  {
     await fetchStudents()
   }
   
+  const suggestion = async (name) => suggestStudent(name)
+  
   return {
     students,
     addStudent: addNewStudent,
     editStudent,
-    removeStudent
+    removeStudent,
+    suggestion
   }
 }

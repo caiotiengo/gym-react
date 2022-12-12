@@ -8,9 +8,9 @@ import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
 import {StudentsProvider} from "./hooks/students/StudentsProvider";
 import {StudentProvider} from "./hooks/student/StudentProvider";
+import Agenda from "./pages/Agenda";
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/students" />, index: true },
         { path: 'students', element: <StudentsProvider><StudentProvider><UserPage /></StudentProvider></StudentsProvider> },
         { path: 'reports', element: <StudentsProvider><UserPage /></StudentsProvider> },
-        { path: 'agenda', element: <ProductsPage /> },
+        { path: 'agenda', element: <StudentsProvider><Agenda /></StudentsProvider> },
         { path: 'gate', element: <BlogPage /> },
       ],
     },

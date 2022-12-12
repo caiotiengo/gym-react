@@ -1,9 +1,16 @@
-import { collection, query, where, getDocs, addDoc, doc, updateDoc, deleteDoc  } from 'firebase/firestore'
+import { collection, query, where, startAt, endAt, orderBy, getDocs, addDoc, doc, updateDoc, deleteDoc  } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 
 const usersCollection = collection(db, "usuarios")
 
 const queryStudents = query(usersCollection, where("admin", "==", false));
+
+const queryStudentsSuggestion = (name) => query(usersCollection,
+  where("admin", "==", false),
+  orderBy('nome'),
+  startAt(name),
+  endAt(`${name}\uf8ff`)
+);
 
 export const getStudents = async () => {
   const students = []
@@ -32,4 +39,14 @@ export const deleteStudent = async (id) => {
   const studentRef = doc(db, 'usuarios', id)
   
   await deleteDoc(studentRef)
+}
+
+export const suggestStudent = async (name) => {
+  const students = []
+  const querySnapshot = await getDocs(queryStudentsSuggestion(name));
+  querySnapshot.forEach((doc) => {
+    students.push({id: doc.id, label: doc.data().nome});
+  });
+  
+  return students
 }
