@@ -13,14 +13,13 @@ import {
   Toolbar,
   TodayButton,
   DragDropProvider,
-  MonthView,
   EditRecurrenceMenu,
-  ViewSwitcher,
   AppointmentTooltip,
   AppointmentForm,
   ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import {useEffect, useState} from "react";
+import {useTheme} from "@mui/material/styles";
 import useStudents from "../hooks/students/useStudents";
 
 const LabelComponent = (props) => {
@@ -122,32 +121,41 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
 
 const Appointment = ({
                        data,
+                       onClick,
                        toggleVisibility,
                        onAppointmentMetaChange,
                        ...restProps
-                     }) => (
-  <Appointments.Appointment
-    onClick={({target}) => {
-      toggleVisibility();
-      onAppointmentMetaChange({target: target.parentElement.parentElement, data})
-    }}
-    {...restProps}
-  >
-    <>
-      <Stack px='8px' color='white'>
-        {data.title}
-        <br/>
-        {data?.professor}
-      </Stack>
-    </>
-  </Appointments.Appointment>
-)
+                     }) => {
+  const theme = useTheme();
+  
+  return (
+    <Appointments.Appointment
+      style={{
+        backgroundColor: theme.palette.primary.main
+      }}
+      onClick={({target}) => {
+        onClick()
+        toggleVisibility();
+        onAppointmentMetaChange({target: target.parentElement.parentElement, data})
+      }}
+      {...restProps}
+    >
+      <>
+        <Stack px='8px' color='white'>
+          {data.title}
+          <br/>
+          {data?.professor}
+        </Stack>
+      </>
+    </Appointments.Appointment>
+  )
+}
 
 
 export default function Agenda() {
   const [schedulerData, setSchedulerData] = useState([
-    {id: 1, startDate: '2022-12-07T09:45', endDate: '2022-12-07T11:00', title: 'Meeting'},
-    {id: 2, startDate: '2022-12-07T12:00', endDate: '2022-12-07T13:30', title: 'Go to a gym'},
+    {id: 1, startDate: '2022-12-15T09:45', endDate: '2022-12-15T11:00', title: 'Meeting'},
+    {id: 2, startDate: '2022-12-15T12:00', endDate: '2022-12-15T13:30', title: 'Go to a gym'},
   ])
   
   const [visible, setVisible] = useState(false)
@@ -187,11 +195,7 @@ export default function Agenda() {
     }
     setSchedulerData(data);
   }
-  
-  useEffect(() => {
-    console.log('Data alterada, hora de atualizar')
-  }, [schedulerData])
-  
+
   return (
     <>
       <Helmet>
@@ -211,12 +215,10 @@ export default function Agenda() {
             <EditingState
               onCommitChanges={commitChanges}
             />
-            <MonthView/>
             <WeekView startDayHour={10}
                       endDayHour={19}/>
             
             <Toolbar/>
-            <ViewSwitcher/>
             <DateNavigator/>
             <TodayButton messages={{today: "Voltar para Hoje"}}/>
             
