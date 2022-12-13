@@ -9,18 +9,16 @@ export const useAuth = () => {
 
     if (!context) throw new Error('AuthProvider not been used.')
 
-    const {user, login, logout} = context
-
     return {
-        user, login, logout
+        ...context
     };
 }
 
 export const RequireAuth = ({children}) => {
     const {user} = useAuth()
-
-    if (user) return children
-
+   
+    if (user.email) return children
+    
     return <Navigate to="/login" replace/>
 }
 

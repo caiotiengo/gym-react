@@ -5,7 +5,7 @@
   "version": "1.6.0",
   "private": false,
   "scripts": {
-    "deploy": "firebase deploy",
+    "deploy": "yarn build && firebase deploy",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

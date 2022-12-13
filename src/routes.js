@@ -32,7 +32,7 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
-      element: <SimpleLayout />,
+      element: <RequireAuth><SimpleLayout /></RequireAuth>,
       children: [
         { element: <Navigate to="/dashboard/students" />, index: true },
         { path: '404', element: <Page404 /> },

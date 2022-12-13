@@ -13,9 +13,10 @@ export const AuthProvider = ({ children }) => {
     
     useEffect(() => {
         const currentUser = getUserInLocalStorage()
-        
+    
         if(currentUser) setUser(currentUser)
     }, [])
+    
     
     const login = async (email, password) => {
         let currentUser = {};
