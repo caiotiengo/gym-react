@@ -215,8 +215,8 @@ export default function Agenda() {
             <EditingState
               onCommitChanges={commitChanges}
             />
-            <WeekView startDayHour={10}
-                      endDayHour={19}/>
+            <WeekView startDayHour={5}
+                      endDayHour={23}/>
             
             <Toolbar/>
             <DateNavigator/>
