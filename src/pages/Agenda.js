@@ -21,6 +21,8 @@ import {
 import {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import useStudents from "../hooks/students/useStudents";
+import useProfessors from "../hooks/professors/useProfessors";
+import useAgenda from "../hooks/agenda/useAgenda";
 
 const LabelComponent = (props) => {
   switch (props.text) {
@@ -66,7 +68,8 @@ const InputComponent = (props) => {
           id="combo-box-demo"
           options={studentsSuggestion}
           sx={{width: 300}}
-          onChange={(e) => onValueChangeHandler(e)}
+          inputValue={props.value}
+          onChange={(e) => onValueChangeHandler(e.target.innerText)}
           renderInput={(params) => <AppointmentForm.TextEditor
             {...params}
             {...props}
@@ -82,14 +85,23 @@ const InputComponent = (props) => {
 };
 
 const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
-  const onCustomFieldChange = (nextValue) => {
-    onFieldChange({professor: nextValue?.innerText});
+  const onCustomFieldChange = async (nextValue) => {
+    const professorSuggestion = await suggestion(nextValue)
+    setProfessorsSuggestion(professorSuggestion)
+    onFieldChange({professor: nextValue});
   };
+  const { suggestion } = useProfessors()
   
-  const options = [
-    {label: 'The Godfather', id: 1},
-    {label: 'Pulp Fiction', id: 2},
-  ];
+  const [professorSuggestion, setProfessorsSuggestion] = useState([])
+  
+  useEffect(() => {
+    const getSuggestion = async () => {
+      const professorSuggestion = await suggestion(restProps.value)
+      setProfessorsSuggestion(professorSuggestion)
+    }
+    getSuggestion()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   
   return (
     <AppointmentForm.BasicLayout
@@ -104,12 +116,12 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
       <Autocomplete
         disablePortal
         id="combo-box-demo"
-        options={options}
+        options={professorSuggestion}
         sx={{width: 300}}
-        onChange={(e) => onCustomFieldChange(e.target)}
+        inputValue={appointmentData.professor}
+        onChange={(e) => onCustomFieldChange(e.target.innerText)}
         renderInput={(params) => <AppointmentForm.TextEditor
           {...params}
-          value={appointmentData.customField}
           onValueChange={onCustomFieldChange}
           placeholder="Selecione um professor"
         />}
@@ -136,6 +148,7 @@ const Appointment = ({
       onClick={({target}) => {
         onClick()
         toggleVisibility();
+        console.log(target.parentElement.parentElement)
         onAppointmentMetaChange({target: target.parentElement.parentElement, data})
       }}
       {...restProps}
@@ -151,12 +164,18 @@ const Appointment = ({
   )
 }
 
+const Content = (({
+                    appointmentData, ...restProps
+                  }) => (
+  <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+    <Stack px={3}>
+      Professor: {appointmentData.professor}
+    </Stack>
+  </AppointmentTooltip.Content>
+));
 
 export default function Agenda() {
-  const [schedulerData, setSchedulerData] = useState([
-    {id: 1, startDate: '2022-12-15T09:45', endDate: '2022-12-15T11:00', title: 'Meeting'},
-    {id: 2, startDate: '2022-12-15T12:00', endDate: '2022-12-15T13:30', title: 'Go to a gym'},
-  ])
+  const {agenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda()
   
   const [visible, setVisible] = useState(false)
   
@@ -180,20 +199,17 @@ export default function Agenda() {
   )
   
   const commitChanges = ({added, changed, deleted}) => {
-    let data = schedulerData
-    
     if (added) {
-      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-      data = [...data, {id: startingAddedId, ...added}];
+      addNewAppointment(added)
     }
     if (changed) {
-      data = data.map(appointment => (
+      const [updatedAppointment] = agenda.map(appointment => (
         changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment));
+      editAppointment(updatedAppointment)
     }
     if (deleted !== undefined) {
-      data = data.filter(appointment => appointment.id !== deleted);
+      removeAppointment(deleted)
     }
-    setSchedulerData(data);
   }
 
   return (
@@ -208,7 +224,7 @@ export default function Agenda() {
         </Typography>
         <Paper>
           <Scheduler
-            data={schedulerData}
+            data={agenda}
             locale="pt-BR"
           >
             <ViewState/>
@@ -231,6 +247,7 @@ export default function Agenda() {
               showOpenButton
               showDeleteButton
               visible={visible}
+              contentComponent={Content}
               onVisibilityChange={toggleVisibility}
               appointmentMeta={appointmentState.appointmentMeta}
               onAppointmentMetaChange={onAppointmentMetaChange}

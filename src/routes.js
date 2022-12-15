@@ -11,6 +11,8 @@ import Page404 from './pages/Page404';
 import {StudentsProvider} from "./hooks/students/StudentsProvider";
 import {StudentProvider} from "./hooks/student/StudentProvider";
 import Agenda from "./pages/Agenda";
+import {ProfessorsProvider} from "./hooks/professors/ProfessorsProvider";
+import {AgendaProvider} from "./hooks/agenda/AgendaProvider";
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +25,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/students" />, index: true },
         { path: 'students', element: <StudentsProvider><StudentProvider><UserPage /></StudentProvider></StudentsProvider> },
         { path: 'reports', element: <StudentsProvider><UserPage /></StudentsProvider> },
-        { path: 'agenda', element: <StudentsProvider><Agenda /></StudentsProvider> },
+        { path: 'agenda', element: <AgendaProvider><ProfessorsProvider><StudentsProvider><Agenda /></StudentsProvider></ProfessorsProvider></AgendaProvider> },
         { path: 'gate', element: <BlogPage /> },
       ],
     },
