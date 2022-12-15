@@ -8,7 +8,11 @@ import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
+import {StudentsProvider} from "./hooks/students/StudentsProvider";
+import {StudentProvider} from "./hooks/student/StudentProvider";
+import Agenda from "./pages/Agenda";
+import {ProfessorsProvider} from "./hooks/professors/ProfessorsProvider";
+import {AgendaProvider} from "./hooks/agenda/AgendaProvider";
 
 // ----------------------------------------------------------------------
 
@@ -19,9 +23,9 @@ export default function Router() {
       element: <RequireAuth> <DashboardLayout /> </RequireAuth>,
       children: [
         { element: <Navigate to="/dashboard/students" />, index: true },
-        { path: 'students', element: <UserPage /> },
-        { path: 'reports', element: <UserPage /> },
-        { path: 'agenda', element: <ProductsPage /> },
+        { path: 'students', element: <StudentsProvider><StudentProvider><UserPage /></StudentProvider></StudentsProvider> },
+        { path: 'reports', element: <StudentsProvider><UserPage /></StudentsProvider> },
+        { path: 'agenda', element: <AgendaProvider><ProfessorsProvider><StudentsProvider><Agenda /></StudentsProvider></ProfessorsProvider></AgendaProvider> },
         { path: 'gate', element: <BlogPage /> },
       ],
     },
@@ -30,7 +34,7 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
-      element: <SimpleLayout />,
+      element: <RequireAuth><SimpleLayout /></RequireAuth>,
       children: [
         { element: <Navigate to="/dashboard/students" />, index: true },
         { path: '404', element: <Page404 /> },

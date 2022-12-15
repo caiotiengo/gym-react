@@ -3,11 +3,13 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import { Container, Typography } from '@mui/material';
 // hooks
+import {Navigate} from "react-router-dom";
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
 // sections
 import { LoginForm } from '../sections/auth/login';
+import {useAuth} from "../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +43,10 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
-
+  const { user } = useAuth()
+  
+  if(user.email) return <Navigate to='/'/>
+  
   return (
     <>
       <Helmet>
@@ -60,7 +65,7 @@ export default function LoginPage() {
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+              Olá, Bom ter você de volta!
             </Typography>
             <img src="/assets/illustrations/illustration_login.png" alt="login" />
           </StyledSection>
