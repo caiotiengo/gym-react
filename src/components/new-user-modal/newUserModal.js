@@ -198,7 +198,7 @@ const NewUserModal = (props) => {
     >
       <Box sx={modalStyle}>
         <Typography variant="h3">
-          {newStudent ? 'Atualizar' : 'Adicionar'} usuário
+          {newStudent ? 'Adicionar' : 'Atualizar'} usuário
         </Typography>
         <Paper>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -343,7 +343,7 @@ const NewUserModal = (props) => {
                   renderInput={(params) => <TextField {...params} />}
                 />}
               <Stack direction="row" justifyContent='right' width='100%'>
-                <Button onClick={handleSubmit} variant='contained'>Adicionar</Button>
+                <Button onClick={handleSubmit} variant='contained'>{newStudent ? 'Adicionar' : 'Atualizar'}</Button>
               </Stack>
             </Box>
           </LocalizationProvider>

@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Login | SYLVA GYM </title>
       </Helmet>
 
       <StyledRoot>
