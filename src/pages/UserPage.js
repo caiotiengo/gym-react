@@ -17,7 +17,7 @@ import {
   TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
 } from '@mui/material';
 // components
-import PropTypes from "prop-types";
+import StatusLabel from '../components/status-label'
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
@@ -42,32 +42,6 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------
-
-const StatusLabel = (props) => {
-  const {status = ''} = props
-  const statusLookup = {
-    '': {
-      color: 'warning',
-      text: 'Novo aluno'
-    },
-    'pago': {
-      color: 'success',
-      text: 'Em dia'
-    },
-    'atraso': {
-      color: 'error',
-      text: 'Pendente'
-    }
-  }
-  
-  return (
-    <Label color={statusLookup[status].color}>{statusLookup[status].text}</Label>
-  )
-}
-
-StatusLabel.propTypes = {
-  status: PropTypes.string
-}
 
 export default function UserPage() {
   const [open, setOpen] = useState(null);

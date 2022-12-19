@@ -6,6 +6,7 @@ export const StudentsContext = createContext()
 export const StudentsProvider = (props) => {
   const { children } = props
   const [students, setStudents] = useState([])
+  const [totalNewStudents, setTotalNewStudents] = useState(0)
   
   const fetchStudents = async () => {
     const currentStudents = await getStudents()
@@ -13,14 +14,30 @@ export const StudentsProvider = (props) => {
     setStudents(currentStudents)
   }
   
+  const getTotalNewStudents = () => {
+    let newStudents = 0
+    students.forEach(({ status }) => {
+      if(!status) {
+        newStudents += 1
+      }
+    })
+    setTotalNewStudents(newStudents)
+  }
+  
   useEffect(() => {
     fetchStudents()
   }, [])
   
+  useEffect(() => {
+    getTotalNewStudents()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [students])
+  
   const values = useMemo(() => ({
     students,
+    totalNewStudents,
     fetchStudents
-  }), [students])
+  }), [students, totalNewStudents])
   
   return <StudentsContext.Provider value={values}>{children}</StudentsContext.Provider>
 }

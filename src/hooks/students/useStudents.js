@@ -3,7 +3,7 @@ import {StudentsContext} from "./StudentsProvider";
 import {addStudent, deleteStudent, suggestStudent, updateStudent} from "../../services/students";
 
 export default function useStudents()  {
-  const { students, fetchStudents } = useContext(StudentsContext)
+  const { students, fetchStudents, totalNewStudents } = useContext(StudentsContext)
   const addNewStudent = async (user) => {
     await addStudent(user)
     await fetchStudents()
@@ -22,6 +22,7 @@ export default function useStudents()  {
   
   return {
     students,
+    totalNewStudents,
     addStudent: addNewStudent,
     editStudent,
     removeStudent,
