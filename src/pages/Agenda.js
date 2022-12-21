@@ -90,7 +90,7 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
     setProfessorsSuggestion(professorSuggestion)
     onFieldChange({professor: nextValue});
   };
-  const { suggestion } = useProfessors()
+  const {suggestion} = useProfessors()
   
   const [professorSuggestion, setProfessorsSuggestion] = useState([])
   
@@ -174,6 +174,18 @@ const Content = (({
   </AppointmentTooltip.Content>
 ));
 
+const CellComponent = (props) => {
+  const {onDoubleClick, hasLimit, ...rest} = props
+  
+  const handleDoubleClick = () => {
+    if (hasLimit) onDoubleClick()
+  }
+  
+  return (
+    <WeekView.TimeTableCell onDoubleClick={handleDoubleClick} {...rest} />
+  )
+}
+
 export default function Agenda() {
   const {agenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda()
   
@@ -211,7 +223,24 @@ export default function Agenda() {
       removeAppointment(deleted)
     }
   }
-
+  
+  const CellComponentWrapper = (props) => {
+    const {startDate: cellStartDate} = props
+    const currentAppointments = agenda.filter((appointment) => {
+      const cellDate = new Date(cellStartDate).getTime()
+      const appointmentDate = new Date(appointment.startDate).getTime()
+      
+      if (cellDate === appointmentDate) {
+        return appointment
+      }
+      return null
+    })
+    
+    const appointmentLimits = 20
+    
+    return <CellComponent hasLimit={currentAppointments.length < appointmentLimits} {...props}/>
+  }
+  
   return (
     <>
       <Helmet>
@@ -231,8 +260,11 @@ export default function Agenda() {
             <EditingState
               onCommitChanges={commitChanges}
             />
-            <WeekView startDayHour={5}
-                      endDayHour={23}/>
+            <WeekView
+              startDayHour={5}
+              endDayHour={23}
+              timeTableCellComponent={CellComponentWrapper}
+            />
             
             <Toolbar/>
             <DateNavigator/>
@@ -240,7 +272,15 @@ export default function Agenda() {
             
             <EditRecurrenceMenu/>
             <IntegratedEditing/>
-            <ConfirmationDialog/>
+            <ConfirmationDialog
+              messages={{
+                discardButton: "Descartar",
+                deleteButton: "Deletar",
+                cancelButton: "Cancelar",
+                confirmDeleteMessage: "Tem certeza de que deseja deletar essa aula?",
+                confirmCancelMessage: "Descartar mudanças não salvas?"
+              }}
+            />
             <Appointments appointmentComponent={MyAppointment}/>
             <AppointmentTooltip
               showCloseButton
