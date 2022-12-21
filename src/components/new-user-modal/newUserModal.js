@@ -100,8 +100,7 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
-    genero,
-    status
+    genero
   } = student
   
   const validateInitialValues = {
@@ -110,8 +109,7 @@ const NewUserModal = (props) => {
     idade: '',
     telefone: '',
     documento: '',
-    endereco: '',
-    status: ''
+    endereco: ''
   }
   const [validate, setValidate] = useState(validateInitialValues)
   
@@ -198,7 +196,7 @@ const NewUserModal = (props) => {
     >
       <Box sx={modalStyle}>
         <Typography variant="h3">
-          {newStudent ? 'Atualizar' : 'Adicionar'} usuário
+          {newStudent ? 'Adicionar' : 'Atualizar'} usuário
         </Typography>
         <Paper>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -213,21 +211,6 @@ const NewUserModal = (props) => {
               noValidate
               autoComplete="off"
             >
-              {
-                !newStudent &&
-                (<TextField
-                  id="status"
-                  label="Status"
-                  value={status}
-                  select
-                  onChange={(e) => {
-                    setStudent({...student, status: e.target.value})
-                  }}
-                >
-                  <MenuItem value="atraso">Atrasado</MenuItem>
-                  <MenuItem value="pago">Pago</MenuItem>
-                </TextField>)
-              }
               <TextField
                 error={Boolean(validate.nome)}
                 helperText={validate.nome}
@@ -343,7 +326,7 @@ const NewUserModal = (props) => {
                   renderInput={(params) => <TextField {...params} />}
                 />}
               <Stack direction="row" justifyContent='right' width='100%'>
-                <Button onClick={handleSubmit} variant='contained'>Adicionar</Button>
+                <Button onClick={handleSubmit} variant='contained'>{newStudent ? 'Adicionar' : 'Atualizar'}</Button>
               </Stack>
             </Box>
           </LocalizationProvider>

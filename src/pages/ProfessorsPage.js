@@ -14,41 +14,39 @@ import {
   Container,
   Typography,
   IconButton,
-  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 // components
-import StatusLabel from '../components/status-label'
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import {UserListHead} from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-import useStudents from "../hooks/students/useStudents";
-import Label from "../components/label";
-import NewUserModal from "../components/new-user-modal";
-import useStudent from "../hooks/student/useStudent";
+import useProfessors from "../hooks/professors/useProfessors";
+import useProfessor from "../hooks/professor/useProfessor";
+import NewProfessorModal from "../components/new-professor-modal";
+import ProfessorEvaluation from "../components/professor-evaluation";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   {id: 'nome', label: 'Nome', alignRight: false},
-  {id: 'idade', label: 'Idade', alignRight: false},
-  {id: 'genero', label: 'Gênero', alignRight: false},
-  {id: 'telefone', label: 'Telefone', alignRight: false},
-  {id: 'email', label: 'E-mail', alignRight: false},
-  {id: 'status', label: 'Status', alignRight: false},
+  {id: 'cpf', label: 'CPF', alignRight: false},
+  {id: 'alunosNoMes', label: 'Qnt. alunos nesse mês', alignRight: false},
   {id: ''},
 ];
 
 // ----------------------------------------------------------
 
-export default function UserPage() {
+export default function ProfessorsPage() {
   const [open, setOpen] = useState(null);
   const [openModal, setOpenModal] = useState(false)
-  const {students, removeStudent} = useStudents()
-  const {setStudent, resetValues} = useStudent()
-  const [currentStudent, setCurrentStudent] = useState()
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openEvaluation, setOpenEvaluation] = useState(false);
+  const {professors, removeProfessor} = useProfessors()
+  const {setProfessor, resetValues} = useProfessor()
+  const [currentProfessor, setCurrentProfessor] = useState()
   
   const handleOpenModal = () => {
     resetValues()
@@ -60,24 +58,22 @@ export default function UserPage() {
   }
   
   const handleOpenMenu = (event, index) => {
-    setCurrentStudent(students[index])
+    setCurrentProfessor(professors[index])
     setOpen(event.currentTarget);
   };
   
   const handleCloseMenu = () => {
-    setOpen(false);
+    setOpen(null);
   };
   
   const handleEdit = () => {
-    setStudent({
-      ...currentStudent,
-      newStudent: false
+    setProfessor({
+      ...currentProfessor,
+      newProfessor: false
     })
     setOpenModal(true)
     setOpen(false)
   }
-  
-  const [openDelete, setOpenDelete] = useState(false);
   
   const handleOpenDelete = () => {
     setOpenDelete(true);
@@ -89,25 +85,42 @@ export default function UserPage() {
   };
   
   const handleRemove = () => {
-    removeStudent(currentStudent.id)
+    removeProfessor(currentProfessor.id)
     setOpenDelete(false)
+  }
+  
+  const handleOpenEvaluation = () => {
+    setProfessor({
+      ...currentProfessor
+    })
+    setOpenEvaluation(true)
+    setOpen(false)
+  }
+  
+  const handleClickEvaluation = (index) => {
+    setCurrentProfessor(professors[index])
+  }
+  
+  const handleCloseEvaluation = () => {
+    setOpenEvaluation(false)
   }
   
   return (
     <>
       <Helmet>
-        <title> User | SYLVA GYM </title>
+        <title> Professores | SYLVA GYM </title>
       </Helmet>
       
-      <NewUserModal open={openModal} handleClose={handleCloseModal}/>
+      <NewProfessorModal open={openModal} handleClose={handleCloseModal}/>
+      <ProfessorEvaluation open={openEvaluation} handleClose={handleCloseEvaluation}/>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Alunos
+            Professores
           </Typography>
           <Button sx={{alignSelf: 'right'}} onClick={handleOpenModal} variant="contained"
                   startIcon={<Iconify icon="eva:plus-fill"/>}>
-            Adicionar aluno
+            Adicionar professor
           </Button>
         </Stack>
         
@@ -121,33 +134,25 @@ export default function UserPage() {
                 />
                 <TableBody>
                   {
-                    students.length
-                      ? students.map((row, index) => {
-                        const {id, nome, telefone, email, genero, idade, status} = row;
+                    professors.length
+                      ? professors.map((row, index) => {
+                        const {id, nomeCompleto, cpf, alunosNoMes} = row;
+                        
+                        const currentMonth = new Date().getMonth()
                         
                         return (
-                          <TableRow hover key={id} tabIndex={-1} role="checkbox">
+                          <TableRow onClick={() => handleClickEvaluation(index)} onDoubleClick={handleOpenEvaluation} hover key={id} tabIndex={-1} role="checkbox">
                             <TableCell component="th" scope="row">
                               <Stack direction="row" alignItems="center" spacing={2}>
                                 <Typography variant="subtitle2" noWrap>
-                                  {nome}
+                                  {nomeCompleto}
                                 </Typography>
                               </Stack>
                             </TableCell>
                             
-                            <TableCell align="left">{idade}</TableCell>
+                            <TableCell align="left">{cpf}</TableCell>
                             
-                            <TableCell align="left">
-                              {genero === 'f' ? 'Feminino' : 'Masculino'}
-                            </TableCell>
-                            
-                            <TableCell align="left">{telefone}</TableCell>
-                            
-                            <TableCell align="left">{email}</TableCell>
-                            
-                            <TableCell align="left">
-                              <StatusLabel status={status}/>
-                            </TableCell>
+                            <TableCell align="left">{alunosNoMes[currentMonth] || 0}</TableCell>
                             
                             <TableCell align="right">
                               <IconButton size="large" color="inherit" onClick={(e) => handleOpenMenu(e, index)}>
@@ -160,8 +165,8 @@ export default function UserPage() {
                       : (
                         <TableRow>
                           <TableCell colSpan={6}>
-                            <Typography  gutterBottom>
-                              Nenhum aluno ainda...
+                            <Typography gutterBottom>
+                              Nenhum professor ainda...
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -192,6 +197,11 @@ export default function UserPage() {
           },
         }}
       >
+        <MenuItem onClick={handleOpenEvaluation}>
+          <Iconify icon={'eva:star-fill'} sx={{mr: 2}}/>
+          Avaliações
+        </MenuItem>
+        
         <MenuItem onClick={handleEdit}>
           <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
           Edit
@@ -202,17 +212,17 @@ export default function UserPage() {
           Delete
         </MenuItem>
       </Popover>
-  
+      
       <Dialog open={openDelete} onClose={handleCloseDelete}>
-        <DialogTitle>Remover Aluno</DialogTitle>
+        <DialogTitle>Remover Professor</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Tem certeza que deseja remover {currentStudent?.nome} ?
+            Tem certeza que deseja remover {currentProfessor?.nomeCompleto} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDelete}>Cancel</Button>
-          <Button onClick={handleRemove}>Remover {currentStudent?.nome}</Button>
+          <Button onClick={handleRemove}>Remover {currentProfessor?.nomeCompleto}</Button>
         </DialogActions>
       </Dialog>
     </>

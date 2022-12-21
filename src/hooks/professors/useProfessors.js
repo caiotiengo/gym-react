@@ -3,7 +3,7 @@ import {ProfessorsContext} from "./ProfessorsProvider";
 import {addProfessor, updateProfessor, deleteProfessor, suggestProfessor} from "../../services/professors";
 
 export default function useProfessors()  {
-  const { students, fetchProfessors } = useContext(ProfessorsContext)
+  const { professors, fetchProfessors } = useContext(ProfessorsContext)
   const addNewProfessor = async (user) => {
     await addProfessor(user)
     await fetchProfessors()
@@ -21,7 +21,7 @@ export default function useProfessors()  {
   const suggestion = async (name) => suggestProfessor(name)
   
   return {
-    students,
+    professors,
     addProfessor: addNewProfessor,
     editProfessor,
     removeProfessor,
