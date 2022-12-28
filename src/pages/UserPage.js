@@ -25,7 +25,6 @@ import {UserListHead} from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import useStudents from "../hooks/students/useStudents";
-import Label from "../components/label";
 import NewUserModal from "../components/new-user-modal";
 import useStudent from "../hooks/student/useStudent";
 

@@ -58,9 +58,7 @@ const NewProfessorModal = (props) => {
   const {
     newProfessor,
     nomeCompleto,
-    cpf,
-    avaliacoes,
-    alunosNoMes
+    cpf
   } = professor
   
   const validateInitialValues = {
