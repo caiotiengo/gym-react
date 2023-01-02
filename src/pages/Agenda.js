@@ -59,7 +59,7 @@ const InputComponent = (props) => {
       const onValueChangeHandler = async (name) => {
         const studentsSuggestion = await suggestion(name)
         setStudentsSuggestion(studentsSuggestion)
-        props.onValueChange(name)
+        props.onValueChange({nome: studentsSuggestion[0].label, idAluno: studentsSuggestion[0].id})
       }
       
       return (
@@ -88,7 +88,7 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
   const onCustomFieldChange = async (nextValue) => {
     const professorSuggestion = await suggestion(nextValue)
     setProfessorsSuggestion(professorSuggestion)
-    onFieldChange({professor: nextValue});
+    onFieldChange({professor: professorSuggestion[0].label, idProfessor: professorSuggestion[0].id});
   };
   const { suggestion } = useProfessors()
   
@@ -176,7 +176,6 @@ const Content = (({
 
 export default function Agenda() {
   const {agenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda()
-  
   const [visible, setVisible] = useState(false)
   
   const [appointmentState, setAppointmentState] = useState({
@@ -200,7 +199,7 @@ export default function Agenda() {
   
   const commitChanges = ({added, changed, deleted}) => {
     if (added) {
-      addNewAppointment(added)
+      addNewAppointment({...added, title: added.title.nome, idAluno: added.title.idAluno})
     }
     if (changed) {
       const [updatedAppointment] = agenda.map(appointment => (

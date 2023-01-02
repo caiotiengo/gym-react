@@ -52,7 +52,7 @@ const monthLookup = [
 export default function ReportsPage() {
   const [open, setOpen] = useState(null);
   const [currentReport, setCurrentReport] = useState()
-   const { reports, editReport, totalPaid, totalLate, selectedMonth, setSelectedMonth } = useReports()
+   const { reports, editReport, totalPaid, totalLate, selectedMonth, changeMonth } = useReports()
   const { students, totalNewStudents } = useStudents()
   const theme = useTheme();
   
@@ -83,10 +83,14 @@ export default function ReportsPage() {
             Relatórios
           </Typography>
           <TextField
+            sx={{width: "130px"}}
             select
             label='Selecione o mês'
             value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
+            onChange={(e) => {
+              console.log('Opa...')
+              return changeMonth(e.target.value)
+            }}
           >
             {
               monthLookup.map((month, index) => (
@@ -169,8 +173,8 @@ export default function ReportsPage() {
                             
                             <TableCell align="left">{cpf}</TableCell>
                             
-                            <TableCell onClick={(e) => handleOpenMenu(e, index)} align="left">
-                              <StatusLabel status={meses[selectedMonth]}/>
+                            <TableCell title="Clique aqui para atualizar o status do pagamento" sx={{ cursor: "pointer" }} onClick={(e) => handleOpenMenu(e, index)} align="left">
+                              <StatusLabel sx={{ cursor: "pointer" }} status={meses[selectedMonth]}/>
                             </TableCell>
                           </TableRow>
                         );
@@ -218,8 +222,8 @@ export default function ReportsPage() {
       >
         {
           <Stack>
-            <StatusLabel onClick={() => handleEditStatus('atraso')} status='atraso'/>
-            <StatusLabel onClick={() => handleEditStatus('pago')} status='pago'/>
+            <StatusLabel sx={{ cursor: "pointer" }} onClick={() => handleEditStatus('atraso')} status='atraso'/>
+            <StatusLabel sx={{ cursor: "pointer" }} onClick={() => handleEditStatus('pago')} status='pago'/>
           </Stack>
         }
       </Popover>

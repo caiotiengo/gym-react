@@ -10,6 +10,10 @@ export default function useReports()  {
     await fetchReports()
   }
 
+  const changeMonth = async (month) => {
+    setSelectedMonth(month)
+    await fetchReports()
+  }
   
   return {
     reports,
@@ -17,6 +21,6 @@ export default function useReports()  {
     totalLate,
     editReport,
     selectedMonth,
-    setSelectedMonth
+    changeMonth
   }
 }

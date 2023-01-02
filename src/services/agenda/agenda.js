@@ -19,11 +19,16 @@ export const getAgenda = async () => {
 }
 
 export const addAppointment = async (appointment) => {
+  console.log(appointment)
   await addDoc(agendaCollection, {
     horarioInicio: appointment.startDate,
     horarioFinal: appointment.endDate,
     nomeAluno: appointment.title,
-    nomeProfessor: appointment.professor
+    nomeProfessor: appointment.professor,
+    idProfessor: appointment.idProfessor,
+    idAluno: appointment.idAluno,
+    concluido: false,
+    nomeDoTreino: ""
   })
 }
 

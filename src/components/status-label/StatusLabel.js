@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import Label from "../label";
 
 const StatusLabel = (props) => {
-  const {status = 'default', onClick} = props
+  const {status = 'default', onClick, ...rest} = props
   const statusLookup = {
     'default': {
       color: 'warning',
@@ -19,7 +19,7 @@ const StatusLabel = (props) => {
   }
   
   return (
-    <Label onClick={onClick} color={statusLookup[status || 'default'].color}>{statusLookup[status || 'default'].text}</Label>
+    <Label {...rest} onClick={onClick} color={statusLookup[status || 'default'].color}>{statusLookup[status || 'default'].text}</Label>
   )
 }
 
