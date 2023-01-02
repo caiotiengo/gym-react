@@ -4,12 +4,12 @@ import {addAppointment, updateAppointment, deleteAppointment} from "../../servic
 
 export default function useAgenda()  {
   const { agenda, fetchAgenda } = useContext(AgendaContext)
-  const addNewAppointment = async (user) => {
-    await addAppointment(user)
+  const addNewAppointment = async (appointment) => {
+    await addAppointment(appointment)
     await fetchAgenda()
   }
-  const editAppointment = async (user) => {
-    await updateAppointment(user)
+  const editAppointment = async (appointment) => {
+    await updateAppointment(appointment)
     await fetchAgenda()
   }
   

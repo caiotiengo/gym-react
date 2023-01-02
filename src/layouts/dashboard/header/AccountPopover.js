@@ -4,7 +4,7 @@ import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import {useNavigate} from "react-router-dom";
-import account from '../../../_mock/account';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {useAuth} from "../../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
@@ -57,7 +57,11 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={image || account.photoURL} alt="photoURL" />
+        {
+          image
+            ? <Avatar src={image} alt="photoURL"/>
+            : <AccountCircleIcon color="primary" fontSize="large" />
+        }
       </IconButton>
 
       <Popover
