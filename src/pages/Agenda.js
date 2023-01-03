@@ -29,7 +29,7 @@ const LabelComponent = (props) => {
     case 'Details':
       return <AppointmentForm.Label
         {...props}
-        text="Aluno"
+        text="Nome do treino"
       />
     case '-':
       return <AppointmentForm.Label
@@ -42,40 +42,19 @@ const LabelComponent = (props) => {
 };
 
 const InputComponent = (props) => {
-  const {suggestion} = useStudents()
-  const [studentsSuggestion, setStudentsSuggestion] = useState([])
-  
-  useEffect(() => {
-    const getSuggestion = async () => {
-      const studentsSuggestion = await suggestion(props.value)
-      setStudentsSuggestion(studentsSuggestion)
-    }
-    getSuggestion()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  
   switch (props.type) {
     case 'titleTextEditor': {
       const onValueChangeHandler = async (name) => {
-        const studentsSuggestion = await suggestion(name)
-        setStudentsSuggestion(studentsSuggestion)
-        props.onValueChange({nome: studentsSuggestion[0].label, idAluno: studentsSuggestion[0].id})
+        props.onValueChange(name)
       }
       
       return (
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={studentsSuggestion}
-          sx={{width: 300}}
-          inputValue={props.value}
-          onChange={(e) => onValueChangeHandler(e.target.innerText)}
-          renderInput={(params) => <AppointmentForm.TextEditor
-            {...params}
-            {...props}
-            onValueChange={onValueChangeHandler}
-            placeholder='Selecione um aluno'
-          />}
+        <AppointmentForm.TextEditor
+          type="title"
+          value={props.value}
+          {...props}
+          onValueChange={onValueChangeHandler}
+          placeholder='Digite o nome do treino'
         />
       )
     }
@@ -85,19 +64,30 @@ const InputComponent = (props) => {
 };
 
 const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
-  const onCustomFieldChange = async (nextValue) => {
-    const professorSuggestion = await suggestion(nextValue)
+  const {suggestion: getProfessorsSuggestion} = useProfessors()
+  const {suggestion: getStudentsSuggestion} = useStudents()
+  const [studentsSuggestion, setStudentsSuggestion] = useState([])
+  const [professorSuggestion, setProfessorsSuggestion] = useState([])
+  
+  const onProfessorCustomFieldChange = async (nextValue) => {
+    const professorSuggestion = await getProfessorsSuggestion(nextValue)
     setProfessorsSuggestion(professorSuggestion)
     onFieldChange({professor: professorSuggestion[0].label, idProfessor: professorSuggestion[0].id});
   };
-  const {suggestion} = useProfessors()
   
-  const [professorSuggestion, setProfessorsSuggestion] = useState([])
+  const onStudentCustomFieldChange = async (nextValue) => {
+    const studentsSuggestion = await getStudentsSuggestion(nextValue)
+    setStudentsSuggestion(studentsSuggestion)
+    onFieldChange({aluno: studentsSuggestion[0].label, idAluno: studentsSuggestion[0].id});
+  };
+  
   
   useEffect(() => {
     const getSuggestion = async () => {
-      const professorSuggestion = await suggestion(restProps.value)
+      const professorSuggestion = await getProfessorsSuggestion(restProps.value)
+      const studentSuggestion = await getStudentsSuggestion(restProps.value)
       setProfessorsSuggestion(professorSuggestion)
+      setStudentsSuggestion(studentSuggestion)
     }
     getSuggestion()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,11 +109,28 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
         options={professorSuggestion}
         sx={{width: 300}}
         inputValue={appointmentData.professor}
-        onChange={(e) => onCustomFieldChange(e.target.innerText)}
+        onChange={(e) => onProfessorCustomFieldChange(e.target.innerText)}
         renderInput={(params) => <AppointmentForm.TextEditor
           {...params}
-          onValueChange={onCustomFieldChange}
+          onValueChange={onProfessorCustomFieldChange}
           placeholder="Selecione um professor"
+        />}
+      />
+      <AppointmentForm.Label
+        text="Aluno"
+        type="title"
+      />
+      <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        options={studentsSuggestion}
+        sx={{width: 300}}
+        inputValue={appointmentData.aluno}
+        onChange={(e) => onStudentCustomFieldChange(e.target.innerText)}
+        renderInput={(params) => <AppointmentForm.TextEditor
+          {...params}
+          onValueChange={onStudentCustomFieldChange}
+          placeholder='Selecione um aluno'
         />}
       />
     
@@ -148,7 +155,6 @@ const Appointment = ({
       onClick={({target}) => {
         onClick()
         toggleVisibility();
-        console.log(target.parentElement.parentElement)
         onAppointmentMetaChange({target: target.parentElement.parentElement, data})
       }}
       {...restProps}
@@ -157,7 +163,7 @@ const Appointment = ({
         <Stack px='8px' color='white'>
           {data.title}
           <br/>
-          {data?.professor}
+          <Typography fontSize='small' noWrap> {data?.aluno} - {data?.professor} </Typography>
         </Stack>
       </>
     </Appointments.Appointment>
@@ -206,12 +212,13 @@ export default function Agenda() {
   }
   
   const MyAppointment = (props) => (
-    <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
-  )
+      <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
+    )
+  
   
   const commitChanges = ({added, changed, deleted}) => {
     if (added) {
-      addNewAppointment({...added, title: added.title.nome, idAluno: added.title.idAluno})
+      addNewAppointment({...added, title: added.title})
     }
     if (changed) {
       const [updatedAppointment] = agenda.map(appointment => (
