@@ -60,7 +60,7 @@ export const loginAPI = async () => {
   return response
 }
 
-const addToGroup = async (session, id) => {
+const addToGroup = async (id) => {
   const body = {
     "object": "user_groups",
     "fields": ["user_id", "group_id"],
@@ -74,6 +74,8 @@ const addToGroup = async (session, id) => {
   let response;
   
   try {
+    const { session } = await loginAPI()
+    
     const {data} = await axios.post(`${REACT_APP_GATE_API_BASE_URL}/create_objects.fcgi?session=${session}`, body, {
       headers: deafultHttpOptions
     })
