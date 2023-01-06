@@ -1,15 +1,18 @@
 import {useContext} from "react";
 import {StudentsContext} from "./StudentsProvider";
-import {addStudent, deleteStudent, suggestStudent, updateStudent} from "../../services/students";
-import { createGateUser, addToGroup } from '../../services/gate'
+import {addStudent, deleteStudent,suggestStudent, updateStudent} from "../../services/students";
+import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 
 export default function useStudents()  {
   const { students, fetchStudents, totalNewStudents } = useContext(StudentsContext)
   const addNewStudent = async (user) => {
     const { ids } = await createGateUser(user.nome)
-    await addToGroup(ids[0])
     await addStudent(user)
     await fetchStudents()
+    await addToGroup(ids[0])
+
+    await addBiometry(ids[0])
+
   }
   const editStudent = async (user) => {
     await updateStudent(user)

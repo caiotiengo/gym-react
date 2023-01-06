@@ -60,7 +60,7 @@ export const loginAPI = async () => {
   return response
 }
 
-const addToGroup = async (id) => {
+export const addToGroup = async (id) => {
   const body = {
     "object": "user_groups",
     "fields": ["user_id", "group_id"],
@@ -100,7 +100,7 @@ export const lockGate = async (lock = false) => {
     
     const {data} = await axios.post(`${REACT_APP_GATE_API_BASE_URL}/set_configuration.fcgi?session=${session}`, {
       "general": {
-        "exception_mode": gateState
+        "exception_mode": ""
       }
     }, {
       headers: deafultHttpOptions
@@ -116,8 +116,7 @@ export const lockGate = async (lock = false) => {
   return response
 }
 
-export const addBiometry = async (session, id) => {
-  console.log(id)
+export const addBiometry = async (id) => {
   
   const body = {
     "type": "biometry",
@@ -129,6 +128,8 @@ export const addBiometry = async (session, id) => {
   let response;
   
   try {
+    const { session } = await loginAPI()
+
     const {data} = await axios.post(`${REACT_APP_GATE_API_BASE_URL}/remote_enroll.fcgi?session=${session}`, body, {headers: deafultHttpOptions})
     
     response = data
