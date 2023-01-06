@@ -4,7 +4,7 @@ import {RequireAuth} from './hooks/useAuth'
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './pages/BlogPage';
+import GatePage from './pages/GatePage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
@@ -55,7 +55,7 @@ export default function Router() {
           element:
             <AgendaProvider><ProfessorsProvider><StudentsProvider><Agenda/></StudentsProvider></ProfessorsProvider></AgendaProvider>
         },
-        {path: 'gate', element: <BlogPage/>},
+        {path: 'gate', element: <GatePage/>},
       ],
     },
     {
