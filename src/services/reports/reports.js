@@ -22,7 +22,6 @@ export const updateReport = async (report) => {
   await updateDoc(reportRef, report)
 }
 export const createReport = async (user,userId) =>{
-  console.log(user)
   await addDoc(reportsCollection, {
     cpf:user?.documento,
     id:userId,
@@ -42,7 +41,6 @@ export const createReport = async (user,userId) =>{
       null],
     nomeAluno:user.nome
   }).then(async docRef => {
-    console.log()
     const reportReference = doc(db, 'pagamentos', docRef.id)
     await updateDoc(reportReference,{
       uid:docRef.id

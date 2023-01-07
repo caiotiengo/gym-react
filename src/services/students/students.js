@@ -26,15 +26,18 @@ export const addStudent = async (student) => {
   addDoc(usersCollection, {
     ...student,
     admin: false,
-    status: ''
+    status: '',
+    biometria:false,
+    idUserCatraca: ''
   }).then(async docRef => {
     await setDoc(doc(usersCollection,docRef.id),{
         ...student,
         id:docRef.id,
         admin: false,
-        status: ''
+        status: '',
+        biometria:false,
+        idUserCatraca: ''
       });
-      console.log(student)
       await createReport(student, docRef.id);
 
     })
