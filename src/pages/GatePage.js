@@ -54,7 +54,7 @@ export default function GatePage() {
   return (
     <>
       <Helmet>
-        <title> Sylva GYM | Catraca </title>
+        <title> SILVA GYM | Catraca </title>
       </Helmet>
       
       <Container>

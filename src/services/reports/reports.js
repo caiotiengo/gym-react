@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc, addDoc,setDoc } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 
 const reportsCollection = collection(db, "pagamentos")
@@ -8,7 +8,7 @@ export const getReports = async () => {
   const querySnapshot = await getDocs(reportsCollection);
   querySnapshot.forEach((doc) => {
     reports.push({
-      id: doc.id,
+      id: doc.uid,
       ...doc.data()
     });
   });
@@ -16,7 +16,38 @@ export const getReports = async () => {
 }
 
 export const updateReport = async (report) => {
-  const reportRef = doc(db, 'pagamentos', report.id)
+  console.log(report?.uid);
+  const reportRef = doc(db, 'pagamentos', report.uid)
 
   await updateDoc(reportRef, report)
 }
+export const createReport = async (user,userId) =>{
+  console.log(user)
+  await addDoc(reportsCollection, {
+    cpf:user?.documento,
+    id:userId,
+    uid:'',
+    meses:[
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null],
+    nomeAluno:user.nome
+  }).then(async docRef => {
+    console.log()
+    const reportReference = doc(db, 'pagamentos', docRef.id)
+    await updateDoc(reportReference,{
+      uid:docRef.id
+    });
+  })
+    .catch(error => console.error("Error adding document: ", error))
+}
+

@@ -1,5 +1,6 @@
-import { collection, query, where, startAt, endAt, orderBy, getDocs, addDoc, doc, updateDoc, deleteDoc  } from 'firebase/firestore'
+import { collection, query, where, startAt, endAt, orderBy, getDocs, addDoc, doc, updateDoc, deleteDoc, setDoc  } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
+import {createReport} from '../reports'
 
 const usersCollection = collection(db, "usuarios")
 
@@ -22,11 +23,23 @@ export const getStudents = async () => {
 }
 
 export const addStudent = async (student) => {
-  await addDoc(usersCollection, {
+  addDoc(usersCollection, {
     ...student,
     admin: false,
     status: ''
-  })
+  }).then(async docRef => {
+    await setDoc(doc(usersCollection,docRef.id),{
+        ...student,
+        id:docRef.id,
+        admin: false,
+        status: ''
+      });
+      console.log(student)
+      await createReport(student, docRef.id);
+
+    })
+    .catch(error => console.error("Error adding document: ", error))
+
 }
 
 export const updateStudent = async (student) => {

@@ -74,7 +74,7 @@ export default function ReportsPage() {
   return (
     <>
       <Helmet>
-        <title> Relatórios | SYLVA GYM </title>
+        <title> Relatórios | SILVA GYM </title>
       </Helmet>
       
       <Container>
@@ -100,6 +100,7 @@ export default function ReportsPage() {
               ))
             }
           </TextField>
+          
         </Stack>
         
         <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 3}}>

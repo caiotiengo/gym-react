@@ -108,7 +108,7 @@ export default function ProfessorsPage() {
   return (
     <>
       <Helmet>
-        <title> Professores | SYLVA GYM </title>
+        <title> Professores | SILVA GYM </title>
       </Helmet>
       
       <NewProfessorModal open={openModal} handleClose={handleCloseModal}/>

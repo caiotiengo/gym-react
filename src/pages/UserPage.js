@@ -95,7 +95,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User | SYLVA GYM </title>
+        <title> User | SILVA GYM </title>
       </Helmet>
       
       <NewUserModal open={openModal} handleClose={handleCloseModal}/>

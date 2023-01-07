@@ -250,7 +250,7 @@ export default function Agenda() {
   return (
     <>
       <Helmet>
-        <title> Sylva GYM | Agenda </title>
+        <title> SILVA GYM | Agenda </title>
       </Helmet>
       
       <Container>

@@ -22,7 +22,7 @@ export default function Page404() {
   return (
     <>
       <Helmet>
-        <title> 404 Pagina não encontrada | SYLVA GYM </title>
+        <title> 404 Pagina não encontrada | SILVA GYM </title>
       </Helmet>
 
       <Container>
