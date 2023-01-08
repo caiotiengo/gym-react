@@ -26,6 +26,7 @@ import {UserListHead} from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import useStudents from "../hooks/students/useStudents";
 import NewUserModal from "../components/new-user-modal";
+import NewTreinamentoModal from "../components/new-treinamento-modal";
 import useStudent from "../hooks/student/useStudent";
 
 // ----------------------------------------------------------------------
@@ -48,7 +49,14 @@ export default function UserPage() {
   const {students, removeStudent} = useStudents()
   const {setStudent, resetValues} = useStudent()
   const [currentStudent, setCurrentStudent] = useState()
-  
+  const {catracaFunction} = useStudents();
+
+  const handleCatracas = () =>{
+    console.log(currentStudent.nome)
+    catracaFunction(currentStudent.nome);
+    setOpen(false)
+  }
+
   const handleOpenModal = () => {
     resetValues()
     setOpenModal(true)
@@ -91,6 +99,17 @@ export default function UserPage() {
     removeStudent(currentStudent.id)
     setOpenDelete(false)
   }
+  const [openModalTreino, setOpenModalTreino] = useState(false);
+
+  const handleOpenTreino =() =>{
+    setOpenModalTreino(true);
+    setOpen(false);
+  }
+    
+  const handleCloseModalTreino = () => {
+    setOpenModalTreino(false)
+  }
+
   
   return (
     <>
@@ -99,6 +118,8 @@ export default function UserPage() {
       </Helmet>
       
       <NewUserModal open={openModal} handleClose={handleCloseModal}/>
+      <NewTreinamentoModal open={openModalTreino} handleClose={handleCloseModalTreino}/>
+
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -191,11 +212,22 @@ export default function UserPage() {
           },
         }}
       >
+        <MenuItem onClick={(e) => {
+            e.preventDefault();
+            window.open('https://sandbox.asaas.com/c/610370838991',"_blank");
+            }}>
+          Pagamento
+        </MenuItem>
+        <MenuItem onClick={handleOpenTreino}>
+          Adicionar Treino
+        </MenuItem>
+        <MenuItem onClick={handleCatracas}>
+          Biometria
+        </MenuItem>
         <MenuItem onClick={handleEdit}>
           <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
           Edit
         </MenuItem>
-        
         <MenuItem onClick={handleOpenDelete} sx={{color: 'error.main'}}>
           <Iconify icon={'eva:trash-2-outline'} sx={{mr: 2}}/>
           Delete

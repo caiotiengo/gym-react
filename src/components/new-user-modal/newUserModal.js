@@ -6,7 +6,9 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
+  Select,
+  InputLabel
 } from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -100,7 +102,8 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
-    genero
+    genero, 
+    plano
   } = student
   
   const validateInitialValues = {
@@ -308,6 +311,24 @@ const NewUserModal = (props) => {
                   </MenuItem>
                 ))}
               </TextField>
+              <Select
+                label="Planos"
+                id="demo-simple-select"
+                sx={{ width: '46%', marginRight: 1, height:55, marginTop: 1 }}
+                defaultValue='Planos'
+                displayEmpty
+                renderValue={value => value?.length ? Array.isArray(value) ? value.join(', ') : value : value}
+                onChange={(e) =>{
+                  console.log(e.target.value);
+                  setStudent({...student, plano: e.target.value})
+                }}
+              >
+                <MenuItem value='Day Use'>Day Use</MenuItem>
+                <MenuItem value='Mensal'>Mensal</MenuItem>
+                <MenuItem value='Trimestral'>Trimestral</MenuItem>
+                <MenuItem value='Anual'>Anual</MenuItem>
+
+              </Select>
               {matches
                 ? <DesktopDatePicker
                   label="Data de Nascimento"

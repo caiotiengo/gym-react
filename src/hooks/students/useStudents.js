@@ -6,11 +6,19 @@ import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 export default function useStudents()  {
   const { students, fetchStudents, totalNewStudents } = useContext(StudentsContext)
   const addNewStudent = async (user) => {
-    const { ids } = await createGateUser(user.nome)
+    // const { ids } = await createGateUser(user.nome)
     await addStudent(user);
     await fetchStudents();
-    await addToGroup(ids[0]);
-    await addBiometry(ids[0]);
+    // await addToGroup(ids[0]);
+    // await addBiometry(ids[0]); 
+    alert('Leve o usuário até a catraca para registrar a sua biometria.');
+
+  }
+  const catracaFunction = async (nome) =>{
+     const { ids } = await createGateUser(nome)
+     await addToGroup(ids[0]);
+     await addBiometry(ids[0]);
+     alert('Leve o usuário até a catraca para registrar a sua biometria.');
 
   }
   const editStudent = async (user) => {
@@ -31,6 +39,7 @@ export default function useStudents()  {
     addStudent: addNewStudent,
     editStudent,
     removeStudent,
-    suggestion
+    suggestion,
+    catracaFunction
   }
 }

@@ -33,6 +33,11 @@ const navConfig = [
     path: '/dashboard/gate',
     icon: <KeyIcon />,
   },
+  {
+    title: 'Control ID',
+    path: '/dashboard/gate',
+    icon: <KeyIcon />,
+  },
 ];
 
 export default navConfig;
