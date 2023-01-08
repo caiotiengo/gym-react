@@ -27,6 +27,7 @@ import useProfessors from "../hooks/professors/useProfessors";
 import useProfessor from "../hooks/professor/useProfessor";
 import NewProfessorModal from "../components/new-professor-modal";
 import ProfessorEvaluation from "../components/professor-evaluation";
+import useStudents from "../hooks/students/useStudents";
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,13 @@ export default function ProfessorsPage() {
   const {professors, removeProfessor} = useProfessors()
   const {setProfessor, resetValues} = useProfessor()
   const [currentProfessor, setCurrentProfessor] = useState()
-  
+  const {catracaFunction } = useProfessors();
+
+  const handleCatracas = () =>{
+    console.log(currentProfessor.nomeCompleto)
+    catracaFunction(currentProfessor.nomeCompleto);
+    setOpen(false)
+  }
   const handleOpenModal = () => {
     resetValues()
     setOpenModal(true)
@@ -197,19 +204,24 @@ export default function ProfessorsPage() {
           },
         }}
       >
-        <MenuItem onClick={handleOpenEvaluation}>
+       {
+       /* <MenuItem onClick={handleOpenEvaluation}>
           <Iconify icon={'eva:star-fill'} sx={{mr: 2}}/>
           Avaliações
         </MenuItem>
-        
+        */
+        } 
+        <MenuItem onClick={handleCatracas}>
+          Biometria
+        </MenuItem>
         <MenuItem onClick={handleEdit}>
           <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
-          Edit
+          Editar
         </MenuItem>
         
         <MenuItem onClick={handleOpenDelete} sx={{color: 'error.main'}}>
           <Iconify icon={'eva:trash-2-outline'} sx={{mr: 2}}/>
-          Delete
+          Deletar
         </MenuItem>
       </Popover>
       
@@ -221,7 +233,7 @@ export default function ProfessorsPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete}>Cancel</Button>
+          <Button onClick={handleCloseDelete}>Cancelar</Button>
           <Button onClick={handleRemove}>Remover {currentProfessor?.nomeCompleto}</Button>
         </DialogActions>
       </Dialog>

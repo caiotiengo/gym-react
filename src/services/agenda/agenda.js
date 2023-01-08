@@ -27,8 +27,6 @@ export const addAppointment = async (appointment) => {
     horarioInicio: appointment.startDate,
     horarioFinal: appointment.endDate,
     nomeAluno: appointment.aluno,
-    nomeProfessor: appointment.professor,
-    idProfessor: appointment.idProfessor,
     idAluno: appointment.idAluno,
     concluido: false,
     nomeTreino: appointment.title
@@ -42,8 +40,6 @@ export const updateAppointment = async (appointment) => {
     horarioInicio: appointment.startDate,
     horarioFinal: appointment.endDate,
     nomeAluno: appointment.aluno,
-    nomeProfessor: appointment.professor,
-    idProfessor: appointment.idProfessor,
     idAluno: appointment.idAluno,
     concluido: false,
     nomeTreino: appointment.title

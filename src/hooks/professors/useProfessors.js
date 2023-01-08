@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import {ProfessorsContext} from "./ProfessorsProvider";
 import {addProfessor, updateProfessor, deleteProfessor, suggestProfessor} from "../../services/professors";
+import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 
 export default function useProfessors()  {
   const { professors, fetchProfessors } = useContext(ProfessorsContext)
@@ -12,7 +13,13 @@ export default function useProfessors()  {
     await updateProfessor(user)
     await fetchProfessors()
   }
-  
+  const catracaFunction = async (nome) =>{
+    const { ids } = await createGateUser(nome)
+    await addToGroup(ids[0]);
+    await addBiometry(ids[0]);
+    alert('Leve o usuário até a catraca para registrar a sua biometria.');
+
+ }
   const removeProfessor = async (id) => {
     await deleteProfessor(id)
     await fetchProfessors()
@@ -25,6 +32,8 @@ export default function useProfessors()  {
     addProfessor: addNewProfessor,
     editProfessor,
     removeProfessor,
-    suggestion
+    suggestion,
+    catracaFunction
+
   }
 }

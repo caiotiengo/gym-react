@@ -99,6 +99,8 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
       onFieldChange={onFieldChange}
       {...restProps}
     >
+
+      {/*
       <AppointmentForm.Label
         text="Professor"
         type="title"
@@ -116,6 +118,8 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
           placeholder="Selecione um professor"
         />}
       />
+       */}
+
       <AppointmentForm.Label
         text="Aluno"
         type="title"

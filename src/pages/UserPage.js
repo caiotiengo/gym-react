@@ -37,7 +37,7 @@ const TABLE_HEAD = [
   {id: 'genero', label: 'Gênero', alignRight: false},
   {id: 'telefone', label: 'Telefone', alignRight: false},
   {id: 'email', label: 'E-mail', alignRight: false},
-  {id: 'status', label: 'Status', alignRight: false},
+  {id: 'Plano', label: 'Plano', alignRight: false},
   {id: ''},
 ];
 
@@ -49,7 +49,7 @@ export default function UserPage() {
   const {students, removeStudent} = useStudents()
   const {setStudent, resetValues} = useStudent()
   const [currentStudent, setCurrentStudent] = useState()
-  const {catracaFunction} = useStudents();
+  const {catracaFunction } = useStudents();
 
   const handleCatracas = () =>{
     console.log(currentStudent.nome)
@@ -143,7 +143,7 @@ export default function UserPage() {
                   {
                     students.length
                       ? students.map((row, index) => {
-                        const {id, nome, telefone, email, genero, idade, status} = row;
+                        const {id, nome, telefone, email, genero, idade, plano} = row;
                         
                         return (
                           <TableRow hover key={id} tabIndex={-1} role="checkbox">
@@ -165,9 +165,7 @@ export default function UserPage() {
                             
                             <TableCell align="left">{email}</TableCell>
                             
-                            <TableCell align="left">
-                              <StatusLabel status={status}/>
-                            </TableCell>
+                            <TableCell align="left">{plano}</TableCell>
                             
                             <TableCell align="right">
                               <IconButton size="large" color="inherit" onClick={(e) => handleOpenMenu(e, index)}>
@@ -214,8 +212,32 @@ export default function UserPage() {
       >
         <MenuItem onClick={(e) => {
             e.preventDefault();
-            window.open('https://sandbox.asaas.com/c/610370838991',"_blank");
-            }}>
+            if(currentStudent.plano === 'Mensal'){
+              window.open('https://www.asaas.com/c/860524753111',"_blank");
+              setOpen(false);
+
+            }else if(currentStudent.plano === 'Trimestral'){
+              window.open('https://www.asaas.com/c/341969192509',"_blank");
+              setOpen(false);
+
+
+            }else if(currentStudent.plano === 'Semestral'){
+              window.open('https://www.asaas.com/c/981430672935',"_blank");
+              setOpen(false);
+
+
+            }else if(currentStudent.plano === 'Day Use'){
+              window.open('https://www.asaas.com/c/327772926828',"_blank");
+              setOpen(false);
+
+
+            }else if(currentStudent.plano === 'Anual'){
+              window.open('https://www.asaas.com/c/018467455664',"_blank");
+              setOpen(false);
+
+
+            }
+        }}>
           Pagamento
         </MenuItem>
         <MenuItem onClick={handleOpenTreino}>
@@ -226,11 +248,11 @@ export default function UserPage() {
         </MenuItem>
         <MenuItem onClick={handleEdit}>
           <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
-          Edit
+          Editar
         </MenuItem>
         <MenuItem onClick={handleOpenDelete} sx={{color: 'error.main'}}>
           <Iconify icon={'eva:trash-2-outline'} sx={{mr: 2}}/>
-          Delete
+          Deletar
         </MenuItem>
       </Popover>
   
@@ -242,7 +264,7 @@ export default function UserPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete}>Cancel</Button>
+          <Button onClick={handleCloseDelete}>Cancelar</Button>
           <Button onClick={handleRemove}>Remover {currentStudent?.nome}</Button>
         </DialogActions>
       </Dialog>
