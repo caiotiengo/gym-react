@@ -323,9 +323,11 @@ const NewUserModal = (props) => {
                   setStudent({...student, plano: e.target.value})
                 }}
               >
+                <MenuItem value='Experimental'>Experimental</MenuItem>
                 <MenuItem value='Day Use'>Day Use</MenuItem>
                 <MenuItem value='Mensal'>Mensal</MenuItem>
                 <MenuItem value='Trimestral'>Trimestral</MenuItem>
+                <MenuItem value='Semestral'>Semestral</MenuItem>
                 <MenuItem value='Anual'>Anual</MenuItem>
 
               </Select>

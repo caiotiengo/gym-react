@@ -240,6 +240,8 @@ export default function UserPage() {
               setOpen(false);
 
 
+            }else{
+              alert('Aluno sem plano ou experimental')
             }
         }}>
           Pagamento
