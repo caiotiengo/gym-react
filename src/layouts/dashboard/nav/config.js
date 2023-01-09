@@ -32,12 +32,7 @@ const navConfig = [
     title: 'Catraca',
     path: '/dashboard/gate',
     icon: <KeyIcon />,
-  },
-  {
-    title: 'Control ID',
-    path: '/dashboard/gate',
-    icon: <KeyIcon />,
-  },
+  }
 ];
 
 export default navConfig;

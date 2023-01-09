@@ -1,16 +1,16 @@
 import {useContext} from "react";
 import {StudentsContext} from "./StudentsProvider";
-import {addStudent, deleteStudent,suggestStudent, updateStudent} from "../../services/students";
+import {addStudent, deleteStudent,suggestStudent, addTreinamento, updateStudent} from "../../services/students";
 import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 
 export default function useStudents()  {
   const { students, fetchStudents, totalNewStudents } = useContext(StudentsContext)
   const addNewStudent = async (user) => {
-    // const { ids } = await createGateUser(user.nome)
+    const { ids } = await createGateUser(user.nome)
     await addStudent(user);
     await fetchStudents();
-    // await addToGroup(ids[0]);
-    // await addBiometry(ids[0]); 
+    await addToGroup(ids[0]);
+    await addBiometry(ids[0]); 
     alert('Leve o usuário até a catraca para registrar a sua biometria.');
 
   }
@@ -20,6 +20,10 @@ export default function useStudents()  {
      await addBiometry(ids[0]);
      alert('Leve o usuário até a catraca para registrar a sua biometria.');
 
+  }
+  const addTreino = async(user,treino, professor) =>{
+    await addTreinamento(user,treino,professor);
+    alert('Treino adicionado com sucesso!');
   }
   const editStudent = async (user) => {
     await updateStudent(user)
@@ -40,6 +44,7 @@ export default function useStudents()  {
     editStudent,
     removeStudent,
     suggestion,
-    catracaFunction
+    catracaFunction,
+    addTreino
   }
 }

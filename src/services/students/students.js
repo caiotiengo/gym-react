@@ -3,6 +3,7 @@ import { db } from '../../utils/firebase'
 import {createReport} from '../reports'
 
 const usersCollection = collection(db, "usuarios")
+const treinosCollection = collection(db, "treinamentos")
 
 const queryStudents = query(usersCollection, where("admin", "==", false));
 
@@ -43,6 +44,16 @@ export const addStudent = async (student) => {
     })
     .catch(error => console.error("Error adding document: ", error))
 
+}
+export const addTreinamento = async(student, treinoText, profe)=>{
+  const date = Date.now()
+  addDoc(treinosCollection,{
+    nomeAluno: student.nome,
+    dia: date,
+    treino: treinoText,
+    alunoUID: student.id,
+    professor:profe
+  })
 }
 
 export const updateStudent = async (student) => {

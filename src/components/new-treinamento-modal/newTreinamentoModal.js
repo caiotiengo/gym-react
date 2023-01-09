@@ -7,13 +7,14 @@ import {
     TextField,
     Typography
   } from "@mui/material";
+  import {forwardRef, useState} from "react";
   import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
   import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
   import PropTypes from "prop-types";
   import TextareaAutosize from '@mui/base/TextareaAutosize';
-  import useProfessor from "../../hooks/professor/useProfessor";
-  import useProfessors from "../../hooks/professors/useProfessors";
-  
+  import useStudents from "../../hooks/students/useStudents";
+  import useStudent from "../../hooks/student/useStudent";
+
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -30,19 +31,19 @@ import {
   
   const NewTreinamentoModal = (props) => {
     const {open, handleClose} = props;
-    // const {addProfessor, editProfessor} = useProfessors();
+    const {
+      student,
+      setStudent,
+      resetValues
+    } = useStudent()
+   const {addTreino } = useStudents()
+   const [text, setText] = useState("");
+   const [textTreino, setTextTreino] = useState("");
+
     const handleSubmit = async () => {
-     /* resetValidate()
-      if (!validateNomeCompleto(nomeCompleto)) return
-      if (!validateCpf(cpf)) return
-      
-      if (newProfessor) {
-        await addProfessor(professor)
-      } else {
-        await editProfessor(professor)
-      }
-      resetValues()
-      resetValidate() */
+      await addTreino(student,text, textTreino);
+      setText('')
+      setTextTreino('')
 
       handleClose()
     }
@@ -57,7 +58,7 @@ import {
             <Box
               component='form'
               sx={{
-                '& .MuiTextField-root': {m: 1, width: '25ch'},
+                '& .MuiTextField-root': { mb:1, width: '55ch'},
                 'display': 'flex',
                 'flexWrap': 'wrap',
                 'justifyContent': 'space-between'
@@ -65,13 +66,23 @@ import {
               noValidate
               autoComplete="off"
             >
+              <TextField
+                required
+                id='nome'
+                label='Nome do Professor'
+                value={textTreino}
+                onChange={(e) => {
+                  setTextTreino(e.target.value);
+                }}
+              />
               <TextareaAutosize
                 aria-label="Treino"
                   placeholder="Digite aqui o treino do aluno selecionado"
                   onChange={(e) => {
-                    console.log(e)
+                    setText(e.target.value);
                   }}
-                  style={{ width: 600, height:300, marginBottom:10, borderRadius:2, boxShadow: 24 }}
+                  style={{ width: 600, height:300, marginBottom:10, borderRadius:5, boxShadow: 24, padding: 10}}
+                  value={text}
                 />
                <Stack direction="row" justifyContent='right' width='100%'>
                 <Button onClick={handleSubmit} variant='contained'>Salvar treino</Button>

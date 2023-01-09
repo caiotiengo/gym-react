@@ -49,7 +49,7 @@ export default function UserPage() {
   const {students, removeStudent} = useStudents()
   const {setStudent, resetValues} = useStudent()
   const [currentStudent, setCurrentStudent] = useState()
-  const {catracaFunction } = useStudents();
+  const { catracaFunction } = useStudents();
 
   const handleCatracas = () =>{
     console.log(currentStudent.nome)
@@ -102,6 +102,10 @@ export default function UserPage() {
   const [openModalTreino, setOpenModalTreino] = useState(false);
 
   const handleOpenTreino =() =>{
+    setStudent({
+      ...currentStudent,
+      newStudent: false
+    })
     setOpenModalTreino(true);
     setOpen(false);
   }
