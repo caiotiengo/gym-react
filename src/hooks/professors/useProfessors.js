@@ -4,7 +4,7 @@ import {addProfessor, updateProfessor, deleteProfessor, suggestProfessor} from "
 import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 
 export default function useProfessors()  {
-  const { professors, fetchProfessors } = useContext(ProfessorsContext)
+  const { professors, fetchProfessors, searchProfessors, professorsCount } = useContext(ProfessorsContext)
   const addNewProfessor = async (user) => {
     await addProfessor(user)
     await fetchProfessors()
@@ -27,13 +27,19 @@ export default function useProfessors()  {
   
   const suggestion = async (name) => suggestProfessor(name)
   
+  const nextPage = async (page) => {
+    await fetchProfessors(page)
+  }
+  
   return {
     professors,
+    professorsCount,
+    nextPage,
     addProfessor: addNewProfessor,
     editProfessor,
     removeProfessor,
     suggestion,
-    catracaFunction
-
+    catracaFunction,
+    searchProfessors
   }
 }

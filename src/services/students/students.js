@@ -1,4 +1,18 @@
-import { collection, query, where, startAt, endAt, orderBy, getDocs, addDoc, doc, updateDoc, deleteDoc, setDoc  } from 'firebase/firestore'
+import {
+  collection,
+  query,
+  where,
+  startAt,
+  endAt,
+  orderBy,
+  getDocs,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  setDoc,
+  limit, startAfter
+} from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 import {createReport} from '../reports'
 
@@ -7,6 +21,8 @@ const treinosCollection = collection(db, "treinamentos")
 
 const queryStudents = query(usersCollection, where("admin", "==", false));
 
+const pageLimit = 10
+
 const queryStudentsSuggestion = (name) => query(usersCollection,
   where("admin", "==", false),
   orderBy('nome'),
@@ -14,12 +30,41 @@ const queryStudentsSuggestion = (name) => query(usersCollection,
   endAt(`${name}\uf8ff`)
 );
 
-export const getStudents = async () => {
+export const findStudents = async (name) => {
   const students = []
-  const querySnapshot = await getDocs(queryStudents);
+  const querySnapshot = await getDocs(queryStudentsSuggestion(name));
   querySnapshot.forEach((doc) => {
     students.push({id: doc.id, ...doc.data()});
   });
+  
+  return students
+}
+
+export const getStudentsPageCount = async () => {
+  const querySnapshot = await getDocs(queryStudents);
+  return Math.ceil(querySnapshot.size / pageLimit)
+}
+
+export const getStudentsPerPage = async (page) => {
+  const students = []
+  const firstLimit = page === 1 ? page : (page - 1)
+  const first = query(queryStudents, orderBy('nome'), limit(pageLimit * firstLimit))
+  const querySnapshot = await getDocs(first);
+  const lastStudent = querySnapshot.docs[querySnapshot.docs.length - 1]
+  const next = query(queryStudents, orderBy('nome'), startAfter(lastStudent), limit(pageLimit))
+  
+  if (page === 1) {
+    querySnapshot.forEach((doc) => {
+      students.push({id: doc.id, ...doc.data()});
+    });
+  } else {
+    const nextStudents = await getDocs(next)
+    
+    nextStudents.forEach((doc) => {
+      students.push({id: doc.id, ...doc.data()});
+    });
+  }
+  
   return students
 }
 

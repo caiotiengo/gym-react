@@ -1,17 +1,26 @@
 import {createContext, useEffect, useMemo, useState} from "react";
 import PropTypes from "prop-types";
-import { getStudents } from "../../services/students";
+import {findStudents, getStudentsPerPage, getStudentsPageCount} from "../../services/students";
 
 export const StudentsContext = createContext()
 export const StudentsProvider = (props) => {
   const { children } = props
   const [students, setStudents] = useState([])
   const [totalNewStudents, setTotalNewStudents] = useState(0)
+  const [studentsCount, setStudentsCount] = useState(0)
   
-  const fetchStudents = async () => {
-    const currentStudents = await getStudents()
+  const fetchStudents = async (page = 1) => {
+    const currentStudents = await getStudentsPerPage(page)
     
     setStudents(currentStudents)
+  }
+  
+  const searchStudents = async (name) => {
+    if(!name || name === '') fetchStudents()
+    
+    const result = await findStudents(name)
+    
+    setStudents(result)
   }
   
   const getTotalNewStudents = () => {
@@ -24,8 +33,14 @@ export const StudentsProvider = (props) => {
     setTotalNewStudents(newStudents)
   }
   
+  const setPageCount = async () =>{
+    const res = await getStudentsPageCount()
+    setStudentsCount(res)
+  }
+  
   useEffect(() => {
     fetchStudents()
+    setPageCount()
   }, [])
   
   useEffect(() => {
@@ -36,7 +51,10 @@ export const StudentsProvider = (props) => {
   const values = useMemo(() => ({
     students,
     totalNewStudents,
-    fetchStudents
+    studentsCount,
+    fetchStudents,
+    searchStudents
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [students, totalNewStudents])
   
   return <StudentsContext.Provider value={values}>{children}</StudentsContext.Provider>

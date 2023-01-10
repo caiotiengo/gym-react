@@ -14,9 +14,10 @@ import {
   Container,
   Typography,
   IconButton,
-  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Paper, Pagination
 } from '@mui/material';
 // components
+import InputBase from "@mui/material/InputBase";
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
@@ -27,7 +28,6 @@ import useProfessors from "../hooks/professors/useProfessors";
 import useProfessor from "../hooks/professor/useProfessor";
 import NewProfessorModal from "../components/new-professor-modal";
 import ProfessorEvaluation from "../components/professor-evaluation";
-import useStudents from "../hooks/students/useStudents";
 
 // ----------------------------------------------------------------------
 
@@ -45,9 +45,11 @@ export default function ProfessorsPage() {
   const [openModal, setOpenModal] = useState(false)
   const [openDelete, setOpenDelete] = useState(false);
   const [openEvaluation, setOpenEvaluation] = useState(false);
-  const {professors, removeProfessor} = useProfessors()
+  const {professors, removeProfessor, searchProfessors, professorsCount, nextPage} = useProfessors()
   const {setProfessor, resetValues} = useProfessor()
   const [currentProfessor, setCurrentProfessor] = useState()
+  const [searchProfessor, setSearchProfessor] = useState('')
+  
   const {catracaFunction } = useProfessors();
 
   const handleCatracas = () =>{
@@ -112,6 +114,20 @@ export default function ProfessorsPage() {
     setOpenEvaluation(false)
   }
   
+  const handleSearchInput = async (event) => {
+    setSearchProfessor(event.target.value)
+    await searchProfessors(event.target.value)
+  }
+  
+  const handleSearchButton = async (event) => {
+    event.preventDefault()
+    await searchProfessors(searchProfessor)
+  }
+  
+  const handlePagination = (event, value) => {
+    nextPage(value)
+  }
+  
   return (
     <>
       <Helmet>
@@ -129,6 +145,25 @@ export default function ProfessorsPage() {
                   startIcon={<Iconify icon="eva:plus-fill"/>}>
             Adicionar professor
           </Button>
+        </Stack>
+  
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Paper
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSearchButton}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 6 }}
+              placeholder="Buscar por nome"
+              onChange={handleSearchInput}
+            />
+            <IconButton onClick={handleSearchButton} sx={{ ml: 1, flex: 1 }} type="button" aria-label="search">
+              <Iconify icon="eva:search-fill"/>
+            </IconButton>
+          </Paper>
         </Stack>
         
         <Card>
@@ -184,6 +219,10 @@ export default function ProfessorsPage() {
             </TableContainer>
           </Scrollbar>
         </Card>
+        
+        <Stack alignItems="center" justifyContent="space-between" mt={2}>
+          <Pagination onChange={handlePagination} count={professorsCount} variant="outlined" />
+        </Stack>
       </Container>
       
       <Popover

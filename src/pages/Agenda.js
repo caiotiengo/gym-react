@@ -21,7 +21,6 @@ import {
 import {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import useStudents from "../hooks/students/useStudents";
-import useProfessors from "../hooks/professors/useProfessors";
 import useAgenda from "../hooks/agenda/useAgenda";
 
 const LabelComponent = (props) => {
@@ -64,17 +63,9 @@ const InputComponent = (props) => {
 };
 
 const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
-  const {suggestion: getProfessorsSuggestion} = useProfessors()
   const {suggestion: getStudentsSuggestion} = useStudents()
   const [studentsSuggestion, setStudentsSuggestion] = useState([])
-  const [professorSuggestion, setProfessorsSuggestion] = useState([])
-  
-  const onProfessorCustomFieldChange = async (nextValue) => {
-    const professorSuggestion = await getProfessorsSuggestion(nextValue)
-    setProfessorsSuggestion(professorSuggestion)
-    onFieldChange({professor: professorSuggestion[0].label, idProfessor: professorSuggestion[0].id});
-  };
-  
+
   const onStudentCustomFieldChange = async (nextValue) => {
     const studentsSuggestion = await getStudentsSuggestion(nextValue)
     setStudentsSuggestion(studentsSuggestion)
@@ -84,9 +75,7 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
   
   useEffect(() => {
     const getSuggestion = async () => {
-      const professorSuggestion = await getProfessorsSuggestion(restProps.value)
       const studentSuggestion = await getStudentsSuggestion(restProps.value)
-      setProfessorsSuggestion(professorSuggestion)
       setStudentsSuggestion(studentSuggestion)
     }
     getSuggestion()
@@ -99,27 +88,6 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
       onFieldChange={onFieldChange}
       {...restProps}
     >
-
-      {/*
-      <AppointmentForm.Label
-        text="Professor"
-        type="title"
-      />
-      <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        options={professorSuggestion}
-        sx={{width: 300}}
-        inputValue={appointmentData.professor}
-        onChange={(e) => onProfessorCustomFieldChange(e.target.innerText)}
-        renderInput={(params) => <AppointmentForm.TextEditor
-          {...params}
-          onValueChange={onProfessorCustomFieldChange}
-          placeholder="Selecione um professor"
-        />}
-      />
-       */}
-
       <AppointmentForm.Label
         text="Aluno"
         type="title"

@@ -7,7 +7,7 @@ import {
     TextField,
     Typography
   } from "@mui/material";
-  import {forwardRef, useState} from "react";
+  import {useState} from "react";
   import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
   import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
   import PropTypes from "prop-types";
@@ -27,14 +27,10 @@ import {
     p: 4,
   };
   
-
-  
   const NewTreinamentoModal = (props) => {
     const {open, handleClose} = props;
     const {
-      student,
-      setStudent,
-      resetValues
+      student
     } = useStudent()
    const {addTreino } = useStudents()
    const [text, setText] = useState("");

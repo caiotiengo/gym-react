@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, addDoc,setDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc, addDoc } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 
 const reportsCollection = collection(db, "pagamentos")
