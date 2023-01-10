@@ -11,10 +11,11 @@ import {
   TableCell,
   Container,
   Typography,
-  TableContainer, CardContent, Grid, MenuItem, TextField
+  TableContainer, CardContent, Grid, MenuItem, TextField, Paper, IconButton, Pagination
 } from '@mui/material';
 // components
 import {useTheme} from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
 import Scrollbar from '../components/scrollbar';
 // sections
 import {UserListHead} from '../sections/@dashboard/user';
@@ -23,6 +24,7 @@ import USERLIST from '../_mock/user';
 import useReports from "../hooks/reports/useReports";
 import StatusLabel from "../components/status-label";
 import useStudents from "../hooks/students/useStudents";
+import Iconify from "../components/iconify";
 
 // ----------------------------------------------------------------------
 
@@ -52,8 +54,9 @@ const monthLookup = [
 export default function ReportsPage() {
   const [open, setOpen] = useState(null);
   const [currentReport, setCurrentReport] = useState()
-   const { reports, editReport, totalPaid, totalLate, selectedMonth, changeMonth } = useReports()
+   const { reports, editReport, totalPaid, totalLate, selectedMonth, changeMonth, searchReports, nextPage, reportCount } = useReports()
   const { students, totalNewStudents } = useStudents()
+  const [searchReport, setSearchReport] = useState('')
   const theme = useTheme();
   
   const handleOpenMenu = (event, index) => {
@@ -70,7 +73,21 @@ export default function ReportsPage() {
     editReport(currentReport)
     handleCloseMenu()
   }
-
+  
+  const handleSearchInput = async (event) => {
+    setSearchReport(event.target.value)
+    await searchReports(event.target.value)
+  }
+  
+  const handleSearchButton = async (event) => {
+    event.preventDefault()
+    await searchReports(searchReport)
+  }
+  
+  const handlePagination = (event, value) => {
+    nextPage(value)
+  }
+  
   return (
     <>
       <Helmet>
@@ -147,6 +164,25 @@ export default function ReportsPage() {
             </Card>
           </Grid>
         </Grid>
+  
+        <Stack direction="row" alignItems="center" justifyContent="space-between" my={5}>
+          <Paper
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSearchButton}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 6 }}
+              placeholder="Buscar por nome"
+              onChange={handleSearchInput}
+            />
+            <IconButton onClick={handleSearchButton} sx={{ ml: 1, flex: 1 }} type="button" aria-label="search">
+              <Iconify icon="eva:search-fill"/>
+            </IconButton>
+          </Paper>
+        </Stack>
         
         <Card style={{marginTop: 18}}>
           <Scrollbar>
@@ -195,6 +231,10 @@ export default function ReportsPage() {
             </TableContainer>
           </Scrollbar>
         </Card>
+  
+        <Stack alignItems="center" justifyContent="space-between" mt={2}>
+          <Pagination onChange={handlePagination} count={reportCount} variant="outlined" />
+        </Stack>
       </Container>
   
       <Popover

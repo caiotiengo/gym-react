@@ -4,27 +4,24 @@ import {addStudent, deleteStudent,suggestStudent, addTreinamento, updateStudent}
 import { createGateUser,addToGroup, addBiometry } from '../../services/gate'
 
 export default function useStudents()  {
-  const { students, fetchStudents, totalNewStudents } = useContext(StudentsContext)
+  const { students, fetchStudents, totalNewStudents, searchStudents, studentsCount } = useContext(StudentsContext)
   const addNewStudent = async (user) => {
-    // const { ids } = await createGateUser(user.nome)
     await addStudent(user);
     await fetchStudents();
-    // await addToGroup(ids[0]);
-    // await addBiometry(ids[0]); 
-    // alert('Leve o usuário até a catraca para registrar a sua biometria.');
-
   }
+
   const catracaFunction = async (nome) =>{
      const { ids } = await createGateUser(nome)
      await addToGroup(ids[0]);
      await addBiometry(ids[0]);
      alert('Leve o usuário até a catraca para registrar a sua biometria.');
-
   }
+
   const addTreino = async(user,treino, professor) =>{
     await addTreinamento(user,treino,professor);
     alert('Treino adicionado com sucesso!');
   }
+
   const editStudent = async (user) => {
     await updateStudent(user)
     await fetchStudents()
@@ -37,14 +34,21 @@ export default function useStudents()  {
   
   const suggestion = async (name) => suggestStudent(name)
   
+  const nextPage = async (page) => {
+    await fetchStudents(page)
+  }
+  
   return {
     students,
     totalNewStudents,
+    studentsCount,
+    nextPage,
     addStudent: addNewStudent,
     editStudent,
     removeStudent,
     suggestion,
     catracaFunction,
-    addTreino
+    addTreino,
+    searchStudents
   }
 }

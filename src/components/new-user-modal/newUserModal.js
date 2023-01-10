@@ -7,8 +7,7 @@ import {
   Stack,
   TextField,
   Typography,
-  Select,
-  InputLabel
+  Select
 } from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -102,8 +101,7 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
-    genero, 
-    plano
+    genero
   } = student
   
   const validateInitialValues = {

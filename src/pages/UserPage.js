@@ -14,10 +14,10 @@ import {
   Container,
   Typography,
   IconButton,
-  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  TableContainer, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Paper, Pagination,
 } from '@mui/material';
+import InputBase from '@mui/material/InputBase';
 // components
-import StatusLabel from '../components/status-label'
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
@@ -46,10 +46,10 @@ const TABLE_HEAD = [
 export default function UserPage() {
   const [open, setOpen] = useState(null);
   const [openModal, setOpenModal] = useState(false)
-  const {students, removeStudent} = useStudents()
+  const {students, removeStudent, searchStudents, nextPage, studentsCount, catracaFunction} = useStudents()
   const {setStudent, resetValues} = useStudent()
   const [currentStudent, setCurrentStudent] = useState()
-  const { catracaFunction } = useStudents();
+  const [searchStudent, setSearchStudent] = useState('')
 
   const handleCatracas = () =>{
     console.log(currentStudent.nome)
@@ -114,6 +114,19 @@ export default function UserPage() {
     setOpenModalTreino(false)
   }
 
+  const handleSearchInput = async (event) => {
+    setSearchStudent(event.target.value)
+    await searchStudents(event.target.value)
+  }
+  
+  const handleSearchButton = async (event) => {
+    event.preventDefault()
+    await searchStudents(searchStudent)
+  }
+  
+  const handlePagination = (event, value) => {
+    nextPage(value)
+  }
   
   return (
     <>
@@ -133,6 +146,25 @@ export default function UserPage() {
                   startIcon={<Iconify icon="eva:plus-fill"/>}>
             Adicionar aluno
           </Button>
+        </Stack>
+        
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Paper
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSearchButton}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 6 }}
+              placeholder="Buscar por nome"
+              onChange={handleSearchInput}
+            />
+            <IconButton onClick={handleSearchButton} sx={{ ml: 1, flex: 1 }} type="button" aria-label="search">
+              <Iconify icon="eva:search-fill"/>
+            </IconButton>
+          </Paper>
         </Stack>
         
         <Card>
@@ -194,6 +226,10 @@ export default function UserPage() {
             </TableContainer>
           </Scrollbar>
         </Card>
+  
+        <Stack alignItems="center" justifyContent="space-between" mt={2}>
+          <Pagination onChange={handlePagination} count={studentsCount} variant="outlined" />
+        </Stack>
       </Container>
       
       <Popover

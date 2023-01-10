@@ -1,6 +1,6 @@
 import {createContext, useEffect, useMemo, useState} from "react";
 import PropTypes from "prop-types";
-import { getReports } from "../../services/reports";
+import {findReports, getReportsPageCount, getReportsPerPage} from "../../services/reports";
 
 export const ReportsContext = createContext()
 export const ReportsProvider = (props) => {
@@ -10,6 +10,7 @@ export const ReportsProvider = (props) => {
   const [selectedMonth, setSelectedMonth] = useState(currentMonth)
   const [totalPaid, setTotalPaid] = useState(0)
   const [totalLate, setTotalLate] = useState(0)
+  const [reportCount, setReportCount] = useState(0)
   
   const getTotalPaid = async () => {
     let paid = 0
@@ -31,13 +32,27 @@ export const ReportsProvider = (props) => {
     setTotalLate(late)
   }
   
-  const fetchReports = async () => {
-    const currentReports = await getReports()
+  const fetchReports = async (page = 1) => {
+    const currentReports = await getReportsPerPage(page)
     setReports(currentReports)
+  }
+  
+  const searchReports = async (name) => {
+    if(!name || name === '') fetchReports()
+    
+    const result = await findReports(name)
+  
+    setReports(result)
+  }
+  
+  const setPageCount = async () =>{
+    const res = await getReportsPageCount()
+    setReportCount(res)
   }
   
   useEffect(() => {
     fetchReports()
+    setPageCount()
   }, [])
   
   useEffect(() => {
@@ -49,6 +64,8 @@ export const ReportsProvider = (props) => {
   
   const values = useMemo(() => ({
     reports,
+    reportCount,
+    searchReports,
     fetchReports,
     totalPaid,
     totalLate,
