@@ -13,6 +13,7 @@ import {
   limit
 } from 'firebase/firestore'
 import {db} from '../../utils/firebase'
+import {capitalizeFirstLetter} from "../../utils/capitilizeString";
 
 const professorsCollection = collection(db, "professores")
 
@@ -30,7 +31,7 @@ export const findProfessors = async (name) => {
 
 const queryProfessorsSuggestion = (name) => query(professorsCollection,
   orderBy('nomeCompleto'),
-  startAt(name),
+  startAt(capitalizeFirstLetter(name)),
   endAt(`${name}\uf8ff`)
 );
 

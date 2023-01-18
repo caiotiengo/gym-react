@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 import {createReport} from '../reports'
+import {capitalizeFirstLetter} from "../../utils/capitilizeString";
 
 const usersCollection = collection(db, "usuarios")
 const treinosCollection = collection(db, "treinamentos")
@@ -26,12 +27,13 @@ const pageLimit = 10
 const queryStudentsSuggestion = (name) => query(usersCollection,
   where("admin", "==", false),
   orderBy('nome'),
-  startAt(name),
+  startAt(capitalizeFirstLetter(name)),
   endAt(`${name}\uf8ff`)
 );
 
 export const findStudents = async (name) => {
   const students = []
+  
   const querySnapshot = await getDocs(queryStudentsSuggestion(name));
   querySnapshot.forEach((doc) => {
     students.push({id: doc.id, ...doc.data()});
