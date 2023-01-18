@@ -21,7 +21,7 @@ const pageLimit = 10
 
 export const findProfessors = async (name) => {
   const professors = []
-  const querySnapshot = await getDocs(queryProfessorsSuggestion(name));
+  const querySnapshot = await getDocs(queryProfessorsSuggestion(capitalizeFirstLetter(name)));
   querySnapshot.forEach((doc) => {
     professors.push({id: doc.id, ...doc.data()});
   });
