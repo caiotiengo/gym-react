@@ -33,8 +33,6 @@ import useStudent from "../hooks/student/useStudent";
 
 const TABLE_HEAD = [
   {id: 'nome', label: 'Nome', alignRight: false},
-  {id: 'idade', label: 'Idade', alignRight: false},
-  {id: 'genero', label: 'Gênero', alignRight: false},
   {id: 'telefone', label: 'Telefone', alignRight: false},
   {id: 'email', label: 'E-mail', alignRight: false},
   {id: 'Plano', label: 'Plano', alignRight: false},
@@ -179,7 +177,7 @@ export default function UserPage() {
                   {
                     students.length
                       ? students.map((row, index) => {
-                        const {id, nome, telefone, email, genero, idade, plano} = row;
+                        const {id, nome, telefone, email, plano} = row;
                         
                         return (
                           <TableRow hover key={id} tabIndex={-1} role="checkbox">
@@ -189,12 +187,6 @@ export default function UserPage() {
                                   {nome}
                                 </Typography>
                               </Stack>
-                            </TableCell>
-                            
-                            <TableCell align="left">{idade}</TableCell>
-                            
-                            <TableCell align="left">
-                              {genero === 'f' ? 'Feminino' : 'Masculino'}
                             </TableCell>
                             
                             <TableCell align="left">{telefone}</TableCell>

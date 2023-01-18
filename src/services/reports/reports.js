@@ -11,6 +11,7 @@ import {
   limit, startAfter
 } from 'firebase/firestore'
 import { db } from '../../utils/firebase'
+import {capitalizeFirstLetter} from "../../utils/capitilizeString";
 
 const reportsCollection = collection(db, "pagamentos")
 
@@ -18,7 +19,7 @@ const pageLimit = 10
 
 const queryReportsByName = (name) => query(reportsCollection,
   orderBy('nomeAluno'),
-  startAt(name),
+  startAt(capitalizeFirstLetter(name)),
   endAt(`${name}\uf8ff`)
 );
 
