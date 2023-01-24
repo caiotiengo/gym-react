@@ -28,7 +28,8 @@ const queryStudentsSuggestion = (name) => query(usersCollection,
   where("admin", "==", false),
   orderBy('nome'),
   startAt(capitalizeFirstLetter(name)),
-  endAt(`${name}\uf8ff`)
+  endAt(`${name}\uf8ff`),
+  limit(pageLimit)
 );
 
 export const findStudents = async (name) => {
@@ -45,6 +46,18 @@ export const findStudents = async (name) => {
 export const getStudentsPageCount = async () => {
   const querySnapshot = await getDocs(queryStudents);
   return Math.ceil(querySnapshot.size / pageLimit)
+}
+
+export const getAllStutends = async () => {
+  const reports = []
+  const querySnapshot = await getDocs(queryStudents);
+  querySnapshot.forEach((doc) => {
+    reports.push({
+      id: doc.uid,
+      ...doc.data()
+    });
+  });
+  return reports
 }
 
 export const getStudentsPerPage = async (page) => {

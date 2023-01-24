@@ -1,11 +1,13 @@
 import {createContext, useEffect, useMemo, useState} from "react";
 import PropTypes from "prop-types";
-import {findReports, getReportsPageCount, getReportsPerPage} from "../../services/reports";
+import {findReports, getReportsPageCount, getReportsPerPage, getAllReports} from "../../services/reports";
 
 export const ReportsContext = createContext()
 export const ReportsProvider = (props) => {
   const { children } = props
   const [reports, setReports] = useState([])
+  const [reportsStats, setReportsStats] = useState([])
+  const [totalStudents, setTotalStudents] = useState(0)
   const currentMonth = new Date().getMonth()
   const [selectedMonth, setSelectedMonth] = useState(currentMonth)
   const [totalPaid, setTotalPaid] = useState(0)
@@ -14,7 +16,7 @@ export const ReportsProvider = (props) => {
   
   const getTotalPaid = async () => {
     let paid = 0
-    await reports.forEach(({ meses }) => {
+    await reportsStats.forEach(({ meses }) => {
       if(meses[selectedMonth] === 'pago') {
         paid += 1
       }
@@ -24,7 +26,7 @@ export const ReportsProvider = (props) => {
   
   const getTotalLate = () => {
     let late = 0
-    reports.forEach(({ meses }) => {
+    reportsStats.forEach(({ meses }) => {
       if(meses[selectedMonth] === 'atraso') {
         late += 1
       }
@@ -34,7 +36,10 @@ export const ReportsProvider = (props) => {
   
   const fetchReports = async (page = 1) => {
     const currentReports = await getReportsPerPage(page)
+    const currentReportsStats = await getAllReports(page)
+    setTotalStudents(currentReportsStats.length)
     setReports(currentReports)
+    setReportsStats(currentReportsStats)
   }
   
   const searchReports = async (name) => {
@@ -65,6 +70,7 @@ export const ReportsProvider = (props) => {
   const values = useMemo(() => ({
     reports,
     reportCount,
+    totalStudents,
     searchReports,
     fetchReports,
     totalPaid,

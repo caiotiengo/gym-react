@@ -54,8 +54,8 @@ const monthLookup = [
 export default function ReportsPage() {
   const [open, setOpen] = useState(null);
   const [currentReport, setCurrentReport] = useState()
-   const { reports, editReport, totalPaid, totalLate, selectedMonth, changeMonth, searchReports, nextPage, reportCount } = useReports()
-  const { students, totalNewStudents } = useStudents()
+   const { reports, totalStudents, editReport, totalPaid, totalLate, selectedMonth, changeMonth, searchReports, nextPage, reportCount } = useReports()
+  const { totalNewStudents } = useStudents()
   const [searchReport, setSearchReport] = useState('')
   const theme = useTheme();
   
@@ -157,7 +157,7 @@ export default function ReportsPage() {
             <Card >
               <CardContent>
                 <Typography fontSize={18}>
-                  {students.length}
+                  {totalStudents}
                 </Typography>
                 Total de alunos
               </CardContent>

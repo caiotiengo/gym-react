@@ -3,7 +3,7 @@ import {ReportsContext} from "./ReportsProvider";
 import { updateReport } from "../../services/reports";
 
 export default function useReports()  {
-  const { reports, fetchReports, totalPaid, totalLate, selectedMonth, setSelectedMonth, searchReports, reportCount } = useContext(ReportsContext)
+  const { reports, totalStudents, fetchReports, totalPaid, totalLate, selectedMonth, setSelectedMonth, searchReports, reportCount } = useContext(ReportsContext)
   
   const editReport = async (report) => {
     await updateReport(report)
@@ -22,6 +22,7 @@ export default function useReports()  {
   return {
     reports,
     reportCount,
+    totalStudents,
     nextPage,
     totalPaid,
     totalLate,

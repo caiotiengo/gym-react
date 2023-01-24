@@ -1,17 +1,20 @@
 import {createContext, useEffect, useMemo, useState} from "react";
 import PropTypes from "prop-types";
-import {findStudents, getStudentsPerPage, getStudentsPageCount} from "../../services/students";
+import {findStudents, getStudentsPerPage, getStudentsPageCount, getAllStutends} from "../../services/students";
 
 export const StudentsContext = createContext()
 export const StudentsProvider = (props) => {
   const { children } = props
   const [students, setStudents] = useState([])
+  const [allStudents, setAllStudents] = useState([])
   const [totalNewStudents, setTotalNewStudents] = useState(0)
   const [studentsCount, setStudentsCount] = useState(0)
   
   const fetchStudents = async (page = 1) => {
     const currentStudents = await getStudentsPerPage(page)
+    const totalStudents = await getAllStutends()
     
+    setAllStudents(totalStudents)
     setStudents(currentStudents)
   }
   
@@ -25,7 +28,7 @@ export const StudentsProvider = (props) => {
   
   const getTotalNewStudents = () => {
     let newStudents = 0
-    students.forEach(({ status }) => {
+    allStudents.forEach(({ status }) => {
       if(!status) {
         newStudents += 1
       }
