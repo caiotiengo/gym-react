@@ -317,7 +317,6 @@ const NewUserModal = (props) => {
                 displayEmpty
                 renderValue={value => value?.length ? Array.isArray(value) ? value.join(', ') : value : value}
                 onChange={(e) =>{
-                  console.log(e.target.value);
                   setStudent({...student, plano: e.target.value})
                 }}
               >

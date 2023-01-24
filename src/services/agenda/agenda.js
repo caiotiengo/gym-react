@@ -22,7 +22,6 @@ export const getAgenda = async () => {
 }
 
 export const addAppointment = async (appointment) => {
-  console.log(appointment)
   await addDoc(agendaCollection, {
     horarioInicio: appointment.startDate,
     horarioFinal: appointment.endDate,

@@ -50,7 +50,6 @@ export default function UserPage() {
   const [searchStudent, setSearchStudent] = useState('')
 
   const handleCatracas = () =>{
-    console.log(currentStudent.nome)
     catracaFunction(currentStudent.nome);
     setOpen(false)
   }

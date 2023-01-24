@@ -74,7 +74,6 @@ export const getReportsPerPage = async (page) => {
 }
 
 export const updateReport = async (report) => {
-  console.log(report?.uid);
   const reportRef = doc(db, 'pagamentos', report.uid)
   
   await updateDoc(reportRef, report)

@@ -53,7 +53,6 @@ export default function ProfessorsPage() {
   const {catracaFunction } = useProfessors();
 
   const handleCatracas = () =>{
-    console.log(currentProfessor.nomeCompleto)
     catracaFunction(currentProfessor.nomeCompleto);
     setOpen(false)
   }

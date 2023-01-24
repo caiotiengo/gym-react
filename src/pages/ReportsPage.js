@@ -105,7 +105,6 @@ export default function ReportsPage() {
             label='Selecione o mês'
             value={selectedMonth}
             onChange={(e) => {
-              console.log('Opa...')
               return changeMonth(e.target.value)
             }}
           >
