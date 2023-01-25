@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import {Helmet} from 'react-helmet-async';
 // @mui
-import {Autocomplete, Container, Stack, Typography} from '@mui/material';
+import {Autocomplete, Box, Container, Modal, Stack, Typography} from '@mui/material';
 // ----------------------------------------------------------------------
 import Paper from '@mui/material/Paper';
 import {EditingState, ViewState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
@@ -20,6 +20,7 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
+import CloseIcon from '@mui/icons-material/Close';
 import useStudents from "../hooks/students/useStudents";
 import useAgenda from "../hooks/agenda/useAgenda";
 
@@ -164,16 +165,51 @@ const CellComponent = (props) => {
   )
 }
 
+const LayoutComponent = (props) => {
+  const {children, ...rest} = props
+  
+  return <AppointmentForm.Layout {...rest} style={{position: "fixed"}}>
+    {children}
+  </AppointmentForm.Layout>
+}
+
+const SuccessAppointmentCreated = (props) => {
+  const {open, handleClose} = props
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4,
+    display: 'flex',
+    justifyContent: 'space-between'
+  };
+  
+  return (<Modal
+    open={open}
+    onClose={handleClose}
+  >
+    <Box sx={modalStyle}>
+      Treino marcado com sucesso!
+      <CloseIcon sx={{cursor: 'pointer'}} onClick={handleClose}/>
+    </Box>
+  </Modal>)
+}
+
 export default function Agenda() {
   const {agenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda()
   const [visible, setVisible] = useState(false)
-  
   const [appointmentState, setAppointmentState] = useState({
     appointmentMeta: {
       target: null,
       data: {}
     }
   })
+  const [openSuccessModal, setOpenSuccessModal] = useState(false)
   
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -187,10 +223,10 @@ export default function Agenda() {
       <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
     )
   
-  
-  const commitChanges = ({added, changed, deleted}) => {
+  const commitChanges = async ({added, changed, deleted}) => {
     if (added) {
-      addNewAppointment({...added, title: added.title})
+      await addNewAppointment({...added, title: added.title})
+      setOpenSuccessModal(true)
     }
     if (changed) {
       const [updatedAppointment] = agenda.map(appointment => (
@@ -221,6 +257,7 @@ export default function Agenda() {
   
   return (
     <>
+      <SuccessAppointmentCreated open={openSuccessModal} handleClose={() => setOpenSuccessModal(false)} />
       <Helmet>
         <title> SILVA GYM | Agenda </title>
       </Helmet>
@@ -275,6 +312,7 @@ export default function Agenda() {
               labelComponent={LabelComponent}
               textEditorComponent={InputComponent}
               basicLayoutComponent={BasicLayout}
+              layoutComponent={LayoutComponent}
             />
             
             <DragDropProvider/>

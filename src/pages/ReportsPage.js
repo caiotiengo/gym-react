@@ -104,9 +104,7 @@ export default function ReportsPage() {
             select
             label='Selecione o mês'
             value={selectedMonth}
-            onChange={(e) => {
-              return changeMonth(e.target.value)
-            }}
+            onChange={(e) => changeMonth(e.target.value)}
           >
             {
               monthLookup.map((month, index) => (
