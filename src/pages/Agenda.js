@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import {Helmet} from 'react-helmet-async';
 // @mui
-import {Autocomplete, Box, Container, Modal, Stack, Typography} from '@mui/material';
+import {Autocomplete, Box, Button, Container, Modal, Stack, Typography} from '@mui/material';
 // ----------------------------------------------------------------------
 import Paper from '@mui/material/Paper';
 import {EditingState, ViewState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
 import {
+  DayView,
   Scheduler,
   WeekView,
   Appointments,
@@ -18,6 +19,7 @@ import {
   AppointmentForm,
   ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
+
 import {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import CloseIcon from '@mui/icons-material/Close';
@@ -66,7 +68,7 @@ const InputComponent = (props) => {
 const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
   const {suggestion: getStudentsSuggestion} = useStudents()
   const [studentsSuggestion, setStudentsSuggestion] = useState([])
-
+  
   const onStudentCustomFieldChange = async (nextValue) => {
     const studentsSuggestion = await getStudentsSuggestion(nextValue)
     setStudentsSuggestion(studentsSuggestion)
@@ -106,7 +108,6 @@ const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
           placeholder='Selecione um aluno'
         />}
       />
-    
     </AppointmentForm.BasicLayout>
   );
 };
@@ -123,7 +124,9 @@ const Appointment = ({
   return (
     <Appointments.Appointment
       style={{
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
+        display: 'flex',
+        alignItems: 'center'
       }}
       onClick={({target}) => {
         onClick()
@@ -136,7 +139,7 @@ const Appointment = ({
         <Stack px='8px' color='white'>
           {data.title}
           <br/>
-          <Typography fontSize='small' noWrap> {data?.aluno} - {data?.professor} </Typography>
+          <Typography fontSize='small' noWrap> {data?.aluno} </Typography>
         </Stack>
       </>
     </Appointments.Appointment>
@@ -146,12 +149,13 @@ const Appointment = ({
 const Content = (({
                     appointmentData, ...restProps
                   }) => (
-  <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
-    <Stack px={3}>
-      Professor: {appointmentData.professor}
-    </Stack>
-  </AppointmentTooltip.Content>
-));
+    <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+      <Stack px={3}>
+        <Typography fontSize='large' noWrap> {appointmentData.aluno} </Typography>
+      </Stack>
+    </AppointmentTooltip.Content>
+  )
+);
 
 const CellComponent = (props) => {
   const {onDoubleClick, hasLimit, ...rest} = props
@@ -210,6 +214,7 @@ export default function Agenda() {
     }
   })
   const [openSuccessModal, setOpenSuccessModal] = useState(false)
+  const [formVisible, setFormVisible] = useState(false)
   
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -220,8 +225,8 @@ export default function Agenda() {
   }
   
   const MyAppointment = (props) => (
-      <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
-    )
+    <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
+  )
   
   const commitChanges = async ({added, changed, deleted}) => {
     if (added) {
@@ -257,31 +262,36 @@ export default function Agenda() {
   
   return (
     <>
-      <SuccessAppointmentCreated open={openSuccessModal} handleClose={() => setOpenSuccessModal(false)} />
+      <SuccessAppointmentCreated open={openSuccessModal} handleClose={() => setOpenSuccessModal(false)}/>
       <Helmet>
         <title> SILVA GYM | Agenda </title>
       </Helmet>
       
       <Container>
-        <Typography variant="h4" sx={{mb: 5}}>
-          Agenda
-        </Typography>
+        <Stack sx={{mb: 4}} direction='row' alignItems='center' justifyContent='space-between' >
+          <Typography variant="h4">
+            Agenda
+          </Typography>
+          <Button variant='contained' onClick={() => setFormVisible(true)} >Adicionar treino</Button>
+        </Stack>
         <Paper>
           <Scheduler
             data={agenda}
             locale="pt-BR"
           >
-            <ViewState/>
+            <ViewState />
             <EditingState
               onCommitChanges={commitChanges}
             />
-            <WeekView
+            <DayView
+              displayName='Diário'
               startDayHour={5}
               endDayHour={23}
               timeTableCellComponent={CellComponentWrapper}
             />
             
             <Toolbar/>
+            
             <DateNavigator/>
             <TodayButton messages={{today: "Voltar para Hoje"}}/>
             
@@ -308,13 +318,14 @@ export default function Agenda() {
               onAppointmentMetaChange={onAppointmentMetaChange}
             />
             <AppointmentForm
+              visible={formVisible}
+              onVisibilityChange={() => setFormVisible(!formVisible)}
               booleanEditorComponent={() => null}
               labelComponent={LabelComponent}
               textEditorComponent={InputComponent}
               basicLayoutComponent={BasicLayout}
               layoutComponent={LayoutComponent}
             />
-            
             <DragDropProvider/>
           </Scheduler>
         </Paper>
