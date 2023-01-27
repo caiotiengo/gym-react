@@ -58,7 +58,7 @@ export default function ReportsPage() {
   const { totalNewStudents } = useStudents()
   const [searchReport, setSearchReport] = useState('')
   const theme = useTheme();
-  
+  console.log(students.length, 'total')
   const handleOpenMenu = (event, index) => {
     setCurrentReport(reports[index])
     setOpen(event.currentTarget);
