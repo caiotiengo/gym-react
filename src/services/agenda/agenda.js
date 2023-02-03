@@ -1,11 +1,25 @@
-import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc  } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where
+} from 'firebase/firestore'
 import { db } from '../../utils/firebase'
 
 const agendaCollection = collection(db, "agenda")
 
-export const getAgenda = async () => {
+const queryAgendaByDate = (({startDate, endDate}) => query(agendaCollection,
+    where('horarioInicio', ">=", new Date(startDate)),
+    where('horarioInicio', "<", new Date(endDate)))
+);
+
+export const getAgenda = async (date) => {
   const agenda = []
-  const querySnapshot = await getDocs(agendaCollection);
+  const querySnapshot = await getDocs(queryAgendaByDate(date));
   querySnapshot.forEach((doc) => {
     agenda.push({
       id: doc.id,

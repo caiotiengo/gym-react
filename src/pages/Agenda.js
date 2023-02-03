@@ -1,181 +1,39 @@
 /* eslint-disable react/prop-types */
 import {Helmet} from 'react-helmet-async';
 // @mui
-import {Autocomplete, Box, Button, Container, Modal, Stack, Typography} from '@mui/material';
-// ----------------------------------------------------------------------
-import Paper from '@mui/material/Paper';
-import {EditingState, ViewState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
 import {
-  DayView,
-  Scheduler,
-  WeekView,
-  Appointments,
-  DateNavigator,
-  Toolbar,
-  TodayButton,
-  DragDropProvider,
-  EditRecurrenceMenu,
-  AppointmentTooltip,
-  AppointmentForm,
-  ConfirmationDialog,
-} from '@devexpress/dx-react-scheduler-material-ui';
+  Box,
+  Button,
+  Card, Chip,
+  Container, IconButton, MenuItem,
+  Modal, Popover,
+  Stack,
+  Table, TableBody, TableCell,
+  TableContainer, TableRow, TextField,
+  Typography
+} from '@mui/material';
+// ----------------------------------------------------------------------
 
 import {useEffect, useState} from "react";
-import {useTheme} from "@mui/material/styles";
 import CloseIcon from '@mui/icons-material/Close';
-import useStudents from "../hooks/students/useStudents";
+import moment from "moment";
+import 'moment/locale/pt-br'
+import useMediaQuery from "@mui/material/useMediaQuery";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {DesktopDateTimePicker, MobileDateTimePicker} from "@mui/x-date-pickers";
 import useAgenda from "../hooks/agenda/useAgenda";
+import Scrollbar from "../components/scrollbar/Scrollbar";
+import {UserListHead} from "../sections/@dashboard/user";
+import USERLIST from "../_mock/user";
+import Iconify from "../components/iconify";
 
-const LabelComponent = (props) => {
-  switch (props.text) {
-    case 'Details':
-      return <AppointmentForm.Label
-        {...props}
-        text="Nome do treino"
-      />
-    case '-':
-      return <AppointmentForm.Label
-        {...props}
-      />
-    case 'More Information':
-    default:
-      return null
-  }
-};
-
-const InputComponent = (props) => {
-  switch (props.type) {
-    case 'titleTextEditor': {
-      const onValueChangeHandler = async (name) => {
-        props.onValueChange(name)
-      }
-      
-      return (
-        <AppointmentForm.TextEditor
-          type="title"
-          value={props.value}
-          {...props}
-          onValueChange={onValueChangeHandler}
-          placeholder='Digite o nome do treino'
-        />
-      )
-    }
-    default:
-      return null
-  }
-};
-
-const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
-  const {suggestion: getStudentsSuggestion} = useStudents()
-  const [studentsSuggestion, setStudentsSuggestion] = useState([])
-  
-  const onStudentCustomFieldChange = async (nextValue) => {
-    const studentsSuggestion = await getStudentsSuggestion(nextValue)
-    setStudentsSuggestion(studentsSuggestion)
-    onFieldChange({aluno: studentsSuggestion[0].label, idAluno: studentsSuggestion[0].id});
-  };
-  
-  
-  useEffect(() => {
-    const getSuggestion = async () => {
-      const studentSuggestion = await getStudentsSuggestion(restProps.value)
-      setStudentsSuggestion(studentSuggestion)
-    }
-    getSuggestion()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  
-  return (
-    <AppointmentForm.BasicLayout
-      appointmentData={appointmentData}
-      onFieldChange={onFieldChange}
-      {...restProps}
-    >
-      <AppointmentForm.Label
-        text="Aluno"
-        type="title"
-      />
-      <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        options={studentsSuggestion}
-        sx={{width: 300}}
-        inputValue={appointmentData.aluno}
-        onChange={(e) => onStudentCustomFieldChange(e.target.innerText)}
-        renderInput={(params) => <AppointmentForm.TextEditor
-          {...params}
-          onValueChange={onStudentCustomFieldChange}
-          placeholder='Selecione um aluno'
-        />}
-      />
-    </AppointmentForm.BasicLayout>
-  );
-};
-
-const Appointment = ({
-                       data,
-                       onClick,
-                       toggleVisibility,
-                       onAppointmentMetaChange,
-                       ...restProps
-                     }) => {
-  const theme = useTheme();
-  
-  return (
-    <Appointments.Appointment
-      style={{
-        backgroundColor: theme.palette.primary.main,
-        display: 'flex',
-        alignItems: 'center'
-      }}
-      onClick={({target}) => {
-        onClick()
-        toggleVisibility();
-        onAppointmentMetaChange({target: target.parentElement.parentElement, data})
-      }}
-      {...restProps}
-    >
-      <>
-        <Stack px='8px' color='white'>
-          {data.title}
-          <br/>
-          <Typography fontSize='small' noWrap> {data?.aluno} </Typography>
-        </Stack>
-      </>
-    </Appointments.Appointment>
-  )
-}
-
-const Content = (({
-                    appointmentData, ...restProps
-                  }) => (
-    <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
-      <Stack px={3}>
-        <Typography fontSize='large' noWrap> {appointmentData.aluno} </Typography>
-      </Stack>
-    </AppointmentTooltip.Content>
-  )
-);
-
-const CellComponent = (props) => {
-  const {onDoubleClick, hasLimit, ...rest} = props
-  
-  const handleDoubleClick = () => {
-    if (hasLimit) onDoubleClick()
-  }
-  
-  return (
-    <WeekView.TimeTableCell onDoubleClick={handleDoubleClick} {...rest} />
-  )
-}
-
-const LayoutComponent = (props) => {
-  const {children, ...rest} = props
-  
-  return <AppointmentForm.Layout {...rest} style={{position: "fixed"}}>
-    {children}
-  </AppointmentForm.Layout>
-}
+const TABLE_HEAD = [
+  {id: 'nome', label: 'Nome do aluno', alignRight: false},
+  {id: 'data', label: 'Data e hora', alignRight: false},
+  {id: 'titulo', label: 'O que vai treinar', alignRight: false},
+  {id: ''}
+];
 
 const SuccessAppointmentCreated = (props) => {
   const {open, handleClose} = props
@@ -204,65 +62,74 @@ const SuccessAppointmentCreated = (props) => {
   </Modal>)
 }
 
+const NewTrainingModal = (props) => {
+  const {open, handleClose} = props
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4,
+    display: 'flex',
+    justifyContent: 'space-between'
+  };
+  
+  return (<Modal
+    open={open}
+    onClose={handleClose}
+  >
+    <Box sx={modalStyle}>
+      Treino marcado com sucesso!
+      <CloseIcon sx={{cursor: 'pointer'}} onClick={handleClose}/>
+    </Box>
+  </Modal>)
+}
+
 export default function Agenda() {
-  const {agenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda()
-  const [visible, setVisible] = useState(false)
-  const [appointmentState, setAppointmentState] = useState({
-    appointmentMeta: {
-      target: null,
-      data: {}
-    }
-  })
+  const [open, setOpen] = useState(null);
+  const [currentStartDate, setCurrentStartDate] = useState(new Date().setHours(0,0,0,0))
+  const [currentEndDate, setCurrentEndDate] = useState(new Date().setHours(23,59,0,0))
+  const [limitTraining, setLimitTraining] = useState(20)
+  const {agenda, fetchAgenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda({startDate: currentStartDate, endDate: currentEndDate})
   const [openSuccessModal, setOpenSuccessModal] = useState(false)
-  const [formVisible, setFormVisible] = useState(false)
+  const [openNewTrainingModal, setOpenNewTrainingModal] = useState(false)
+  const [currentTraining, setCurrentTraining] = useState()
+  const matches = useMediaQuery('(min-width: 600px)')
   
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  //TODO Create, update and delete training
+  
+  useEffect(() => {
+    fetchAgenda({startDate: currentStartDate, endDate: currentEndDate})
+    // eslint-disable-next-line
+  }, [currentStartDate, currentEndDate])
+  
+  const disableNewTrainings = agenda.length >= limitTraining
+  
+  const handleOpenMenu = (event, index) => {
+    setCurrentTraining(agenda[index])
+    setOpen(event.currentTarget);
+  };
+  
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+  
+  const handleEdit = () => {
+    return null
   }
   
-  const onAppointmentMetaChange = ({data, target}) => {
-    setAppointmentState({...appointmentState, appointmentMeta: {data, target}})
-  }
-  
-  const MyAppointment = (props) => (
-    <Appointment {...props} toggleVisibility={toggleVisibility} onAppointmentMetaChange={onAppointmentMetaChange}/>
-  )
-  
-  const commitChanges = async ({added, changed, deleted}) => {
-    if (added) {
-      await addNewAppointment({...added, title: added.title})
-      setOpenSuccessModal(true)
-    }
-    if (changed) {
-      const [updatedAppointment] = agenda.map(appointment => (
-        changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment));
-      editAppointment(updatedAppointment)
-    }
-    if (deleted !== undefined) {
-      removeAppointment(deleted)
-    }
-  }
-  
-  const CellComponentWrapper = (props) => {
-    const {startDate: cellStartDate} = props
-    const currentAppointments = agenda.filter((appointment) => {
-      const cellDate = new Date(cellStartDate).getTime()
-      const appointmentDate = new Date(appointment.startDate).getTime()
-      
-      if (cellDate === appointmentDate) {
-        return appointment
-      }
-      return null
-    })
-    
-    const appointmentLimits = 20
-    
-    return <CellComponent hasLimit={currentAppointments.length < appointmentLimits} {...props}/>
+  const handleOpenDelete = () => {
+    return null
   }
   
   return (
     <>
       <SuccessAppointmentCreated open={openSuccessModal} handleClose={() => setOpenSuccessModal(false)}/>
+      <NewTrainingModal open={openNewTrainingModal} handleClose={() => setOpenNewTrainingModal(false)}/>
       <Helmet>
         <title> SILVA GYM | Agenda </title>
       </Helmet>
@@ -272,64 +139,135 @@ export default function Agenda() {
           <Typography variant="h4">
             Agenda
           </Typography>
-          <Button variant='contained' onClick={() => setFormVisible(true)} >Adicionar treino</Button>
+          <Button disabled={disableNewTrainings} variant='contained' onClick={() => setOpenNewTrainingModal(true)} >Adicionar treino</Button>
         </Stack>
-        <Paper>
-          <Scheduler
-            data={agenda}
-            locale="pt-BR"
-          >
-            <ViewState />
-            <EditingState
-              onCommitChanges={commitChanges}
+        <Stack sx={{mb: 4}} direction='row' alignItems='start' justifyContent='space-between' >
+          <Stack>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {matches
+                ? <DesktopDateTimePicker
+                  label="Dia do treino"
+                  inputFormat="DD/MM/YYYY hh:mm"
+                  value={currentStartDate}
+                  onChange={(e) => {
+                    setCurrentStartDate(e.format())
+                    setCurrentEndDate(e.add(30, 'minute').format())
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+                : <MobileDateTimePicker
+                  label="Dia do treino"
+                  inputFormat="DD/MM/YYYY"
+                  value={currentStartDate}
+                  onChange={(e) => setCurrentStartDate(e.format())}
+                  renderInput={(params) => <TextField {...params} />}
+                />}
+              <Button onClick={() => {
+                setCurrentStartDate(new Date(currentStartDate).setHours(0,0,0,0))
+                setCurrentEndDate(new Date(currentEndDate).setHours(23,59,0,0))
+              }}>Mostrar todos os treinos do dia</Button>
+            </LocalizationProvider>
+          </Stack>
+          <Stack>
+            <Typography variant="p">
+              Alunos para {moment(currentStartDate).calendar()}
+            </Typography>
+            <Chip color='primary' label={agenda.length} />
+          </Stack>
+          <Stack>
+            <TextField
+              id='limit'
+              label='Limite de treinos por hora'
+              type='number'
+              value={limitTraining}
+              onChange={(e) => setLimitTraining(e.target.value)}
             />
-            <DayView
-              displayName='Diário'
-              startDayHour={5}
-              endDayHour={23}
-              timeTableCellComponent={CellComponentWrapper}
-            />
-            
-            <Toolbar/>
-            
-            <DateNavigator/>
-            <TodayButton messages={{today: "Voltar para Hoje"}}/>
-            
-            <EditRecurrenceMenu/>
-            <IntegratedEditing/>
-            <ConfirmationDialog
-              messages={{
-                discardButton: "Descartar",
-                deleteButton: "Deletar",
-                cancelButton: "Cancelar",
-                confirmDeleteMessage: "Tem certeza de que deseja deletar essa aula?",
-                confirmCancelMessage: "Descartar mudanças não salvas?"
-              }}
-            />
-            <Appointments appointmentComponent={MyAppointment}/>
-            <AppointmentTooltip
-              showCloseButton
-              showOpenButton
-              showDeleteButton
-              visible={visible}
-              contentComponent={Content}
-              onVisibilityChange={toggleVisibility}
-              appointmentMeta={appointmentState.appointmentMeta}
-              onAppointmentMetaChange={onAppointmentMetaChange}
-            />
-            <AppointmentForm
-              visible={formVisible}
-              onVisibilityChange={() => setFormVisible(!formVisible)}
-              booleanEditorComponent={() => null}
-              labelComponent={LabelComponent}
-              textEditorComponent={InputComponent}
-              basicLayoutComponent={BasicLayout}
-              layoutComponent={LayoutComponent}
-            />
-            <DragDropProvider/>
-          </Scheduler>
-        </Paper>
+          </Stack>
+        </Stack>
+        <Card>
+          <Scrollbar>
+            <TableContainer sx={{minWidth: 800}}>
+              <Table>
+                <UserListHead
+                  headLabel={TABLE_HEAD}
+                  rowCount={USERLIST.length}
+                />
+                <TableBody>
+                  {
+                    agenda.length
+                      ? agenda.map((row, index) => {
+                        const {id, aluno, startDate, title} = row;
+                        
+                        const date = moment(startDate)
+                        date.locale('pt-br')
+                      
+                        return (
+                          <TableRow hover key={id} tabIndex={-1} role="checkbox">
+                            <TableCell component="th" scope="row">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <Typography variant="subtitle2" noWrap>
+                                  {aluno}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                      
+                            <TableCell align="left">{date.format('D MMM') } | {date.format('LT')}</TableCell>
+                            
+                            <TableCell align="left">{title}</TableCell>
+                            
+                            <TableCell align="right">
+                              <IconButton size="large" color="inherit" onClick={(e) => handleOpenMenu(e, index)}>
+                                <Iconify icon={'eva:more-vertical-fill'}/>
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                      : (
+                        <TableRow>
+                          <TableCell colSpan={6}>
+                            <Typography gutterBottom>
+                              Nenhum treino marcado para esse dia...
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      )
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Scrollbar>
+        </Card>
       </Container>
+  
+      <Popover
+        open={Boolean(open)}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{vertical: 'top', horizontal: 'left'}}
+        transformOrigin={{vertical: 'top', horizontal: 'right'}}
+        PaperProps={{
+          sx: {
+            p: 1,
+            width: 140,
+            '& .MuiMenuItem-root': {
+              px: 1,
+              typography: 'body2',
+              borderRadius: 0.75,
+            },
+          },
+        }}
+      >
+        <MenuItem onClick={handleEdit}>
+          <Iconify icon={'eva:edit-fill'} sx={{mr: 2}}/>
+          Editar
+        </MenuItem>
+    
+        <MenuItem onClick={handleOpenDelete} sx={{color: 'error.main'}}>
+          <Iconify icon={'eva:trash-2-outline'} sx={{mr: 2}}/>
+          Deletar
+        </MenuItem>
+      </Popover>
     </>
   );
 }

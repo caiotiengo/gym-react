@@ -1,4 +1,4 @@
-import {createContext, useEffect, useMemo, useState} from "react";
+import {createContext, useMemo, useState} from "react";
 import PropTypes from "prop-types";
 import { getAgenda } from "../../services/agenda";
 
@@ -7,15 +7,11 @@ export const AgendaProvider = (props) => {
   const { children } = props
   const [agenda, setAgenda] = useState([])
   
-  const fetchAgenda = async () => {
-    const currentAgenda = await getAgenda()
+  const fetchAgenda = async (date) => {
+    const currentAgenda = await getAgenda(date)
   
     setAgenda(currentAgenda)
   }
-  
-  useEffect(() => {
-    fetchAgenda()
-  }, [])
   
   const values = useMemo(() => ({
     agenda,
