@@ -123,6 +123,7 @@ const NewTrainingModal = (props) => {
                 ? <DesktopDateTimePicker
                   label="Inicio do treino"
                   inputFormat="DD/MM/YYYY hh:mm"
+                  ampm={false}
                   value={startDate}
                   onChange={(e) => {
                     setTraining({...training, startDate: new Date(e.format())})
@@ -132,6 +133,7 @@ const NewTrainingModal = (props) => {
                 : <MobileDateTimePicker
                   label="Inicio do treino"
                   inputFormat="DD/MM/YYYY hh:mm"
+                  ampm={false}
                   value={startDate}
                   onChange={(e) => setTraining({...training, startDate: new Date(e.format())})}
                   renderInput={(params) => <TextField {...params} />}
@@ -140,6 +142,7 @@ const NewTrainingModal = (props) => {
                 ? <DesktopDateTimePicker
                   label="Fim do treino"
                   inputFormat="DD/MM/YYYY hh:mm"
+                  ampm={false}
                   value={endDate}
                   onChange={(e) => {
                     setTraining({...training, endDate: new Date(e.format())})
@@ -149,6 +152,7 @@ const NewTrainingModal = (props) => {
                 : <MobileDateTimePicker
                   label="Fim do treino"
                   inputFormat="DD/MM/YYYY hh:mm"
+                  ampm={false}
                   value={endDate}
                   onChange={(e) => setTraining({...training, endDate: new Date(e.format())})}
                   renderInput={(params) => <TextField {...params} />}

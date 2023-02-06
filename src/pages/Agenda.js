@@ -160,6 +160,7 @@ export default function Agenda() {
                   label="Dia do treino"
                   inputFormat="DD/MM/YYYY hh:mm"
                   value={currentStartDate}
+                  ampm={false}
                   onChange={(e) => {
                     setCurrentStartDate(e.format())
                     setCurrentEndDate(e.add(30, 'minute').format())
@@ -170,6 +171,7 @@ export default function Agenda() {
                   label="Dia do treino"
                   inputFormat="DD/MM/YYYY"
                   value={currentStartDate}
+                  ampm={false}
                   onChange={(e) => setCurrentStartDate(e.format())}
                   renderInput={(params) => <TextField {...params} />}
                 />}
