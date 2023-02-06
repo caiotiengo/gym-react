@@ -17,6 +17,7 @@ import {AgendaProvider} from "./hooks/agenda/AgendaProvider";
 import {ProfessorProvider} from "./hooks/professor/ProfessorProvider";
 import ReportsPage from "./pages/ReportsPage";
 import {ReportsProvider} from "./hooks/reports/ReportsProvider";
+import {TrainingProvider} from "./hooks/training/TrainingProvider";
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +54,15 @@ export default function Router() {
         },
         {path: 'agenda',
           element:
-            <AgendaProvider><ProfessorsProvider><StudentsProvider><Agenda/></StudentsProvider></ProfessorsProvider></AgendaProvider>
+            <AgendaProvider>
+              <TrainingProvider>
+                <ProfessorsProvider>
+                  <StudentsProvider>
+                    <Agenda/>
+                  </StudentsProvider>
+                </ProfessorsProvider>
+              </TrainingProvider>
+            </AgendaProvider>
         },
         {path: 'gate', element: <GatePage/>},
       ],

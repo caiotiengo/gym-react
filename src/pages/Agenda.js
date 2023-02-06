@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Card, Chip,
-  Container, IconButton, MenuItem,
+  Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem,
   Modal, Popover,
   Stack,
   Table, TableBody, TableCell,
@@ -27,6 +27,8 @@ import Scrollbar from "../components/scrollbar/Scrollbar";
 import {UserListHead} from "../sections/@dashboard/user";
 import USERLIST from "../_mock/user";
 import Iconify from "../components/iconify";
+import useTraining from "../hooks/training/useTraining";
+import NewTrainingModal from "../components/new-training-modal";
 
 const TABLE_HEAD = [
   {id: 'nome', label: 'Nome do aluno', alignRight: false},
@@ -35,8 +37,8 @@ const TABLE_HEAD = [
   {id: ''}
 ];
 
-const SuccessAppointmentCreated = (props) => {
-  const {open, handleClose} = props
+const SuccessMessage = (props) => {
+  const {open, handleClose, message} = props
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -56,34 +58,7 @@ const SuccessAppointmentCreated = (props) => {
     onClose={handleClose}
   >
     <Box sx={modalStyle}>
-      Treino marcado com sucesso!
-      <CloseIcon sx={{cursor: 'pointer'}} onClick={handleClose}/>
-    </Box>
-  </Modal>)
-}
-
-const NewTrainingModal = (props) => {
-  const {open, handleClose} = props
-  const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4,
-    display: 'flex',
-    justifyContent: 'space-between'
-  };
-  
-  return (<Modal
-    open={open}
-    onClose={handleClose}
-  >
-    <Box sx={modalStyle}>
-      Treino marcado com sucesso!
+      {message}
       <CloseIcon sx={{cursor: 'pointer'}} onClick={handleClose}/>
     </Box>
   </Modal>)
@@ -95,12 +70,14 @@ export default function Agenda() {
   const [currentEndDate, setCurrentEndDate] = useState(new Date().setHours(23,59,0,0))
   const [limitTraining, setLimitTraining] = useState(20)
   const {agenda, fetchAgenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda({startDate: currentStartDate, endDate: currentEndDate})
-  const [openSuccessModal, setOpenSuccessModal] = useState(false)
+  const [openSuccessCreatedModal, setOpenSuccessCreatedModal] = useState(false)
+  const [openSuccessRemoveModal, setOpenSuccessRemoveModal] = useState(false)
+  const [openSuccessUpdatedModal, setOpenSuccessUpdatedModal] = useState(false)
   const [openNewTrainingModal, setOpenNewTrainingModal] = useState(false)
   const [currentTraining, setCurrentTraining] = useState()
   const matches = useMediaQuery('(min-width: 600px)')
-  
-  //TODO Create, update and delete training
+  const {training, setTraining, resetValues} = useTraining()
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   
   useEffect(() => {
     fetchAgenda({startDate: currentStartDate, endDate: currentEndDate})
@@ -118,18 +95,52 @@ export default function Agenda() {
     setOpen(null);
   };
   
+  const handleNewTraining = () => {
+    resetValues()
+    setOpenNewTrainingModal(true)
+  }
+  
   const handleEdit = () => {
-    return null
+    setTraining({
+      ...currentTraining,
+      newTraining: false
+    })
+    setOpenNewTrainingModal(true)
+    setOpen(false)
+    setOpenSuccessUpdatedModal(true)
   }
   
   const handleOpenDelete = () => {
-    return null
+    setOpenDeleteDialog(true);
+    setOpen(false)
+  }
+  const handleRemove = () => {
+    removeAppointment(currentTraining.id)
+    setOpenDeleteDialog(false);
+    setOpenSuccessRemoveModal(true)
+  }
+  
+  const handleAction = async (newTraining) => {
+    if(training.newTraining){
+      await addNewAppointment(newTraining)
+      setOpenSuccessCreatedModal(true)
+    } else {
+      await editAppointment(newTraining)
+      setOpenSuccessUpdatedModal(true)
+    }
   }
   
   return (
     <>
-      <SuccessAppointmentCreated open={openSuccessModal} handleClose={() => setOpenSuccessModal(false)}/>
-      <NewTrainingModal open={openNewTrainingModal} handleClose={() => setOpenNewTrainingModal(false)}/>
+      <SuccessMessage message='Treino atualizado com sucesso!' open={openSuccessUpdatedModal} handleClose={() => setOpenSuccessUpdatedModal(false)}/>
+      <SuccessMessage message='Treino marcado com sucesso!' open={openSuccessCreatedModal} handleClose={() => setOpenSuccessCreatedModal(false)}/>
+      <SuccessMessage message='Treino removido com sucesso!' open={openSuccessRemoveModal} handleClose={() => setOpenSuccessRemoveModal(false)}/>
+      <NewTrainingModal
+        open={openNewTrainingModal}
+        handleClose={() => setOpenNewTrainingModal(false)}
+        handleAction={(e) => handleAction(e)}
+      />
+      
       <Helmet>
         <title> SILVA GYM | Agenda </title>
       </Helmet>
@@ -139,7 +150,7 @@ export default function Agenda() {
           <Typography variant="h4">
             Agenda
           </Typography>
-          <Button disabled={disableNewTrainings} variant='contained' onClick={() => setOpenNewTrainingModal(true)} >Adicionar treino</Button>
+          <Button disabled={disableNewTrainings} variant='contained' onClick={handleNewTraining} >Adicionar treino</Button>
         </Stack>
         <Stack sx={{mb: 4}} direction='row' alignItems='start' justifyContent='space-between' >
           <Stack>
@@ -268,6 +279,19 @@ export default function Agenda() {
           Deletar
         </MenuItem>
       </Popover>
+      
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        <DialogTitle>Remover Treino</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja o treino de {currentTraining?.aluno} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancelar</Button>
+          <Button onClick={handleRemove}>Remover</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
