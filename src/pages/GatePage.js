@@ -66,7 +66,7 @@ export default function GatePage() {
             <Button sx={{alignSelf: 'right', marginRight: 3}} variant="contained" onClick={() => lockGate(true)}>
               Bloquear Catraca
             </Button>
-            <Button sx={{alignSelf: 'right'}} variant="contained" onClick={lockGate}>
+            <Button sx={{alignSelf: 'right'}} variant="contained" onClick={() => lockGate(false)}>
               Desbloquear Catraca
             </Button>
           </Stack>

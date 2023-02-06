@@ -100,7 +100,7 @@ export const lockGate = async (lock = false) => {
     
     const {data} = await axios.post(`${REACT_APP_GATE_API_BASE_URL}/set_configuration.fcgi?session=${session}`, {
       "general": {
-        "exception_mode": ""
+        "exception_mode": gateState
       }
     }, {
       headers: deafultHttpOptions
