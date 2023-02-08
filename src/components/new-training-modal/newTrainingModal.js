@@ -1,3 +1,4 @@
+import 'dayjs/locale/pt-br';
 import {
   Box,
   Button,
@@ -86,7 +87,7 @@ const NewTrainingModal = (props) => {
           {newTraining ? 'Adicionar' : 'Atualizar'} treino
         </Typography>
         <Paper>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
             <Box
               component='form'
               sx={{
@@ -122,40 +123,58 @@ const NewTrainingModal = (props) => {
               {matches
                 ? <DesktopDateTimePicker
                   label="Inicio do treino"
-                  inputFormat="DD/MM/YYYY hh:mm"
                   ampm={false}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   value={startDate}
-                  onChange={(e) => {
-                    setTraining({...training, startDate: new Date(e.format())})
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e) =>
+                    setTraining({
+                      ...training,
+                      startDate: new Date(e?.format()),
+                      endDate: new Date(e?.add('30', 'minutes').format())
+                    })
+                  }
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa hh:mm"
+                  }}/>}
                 />
                 : <MobileDateTimePicker
                   label="Inicio do treino"
-                  inputFormat="DD/MM/YYYY hh:mm"
                   ampm={false}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   value={startDate}
-                  onChange={(e) => setTraining({...training, startDate: new Date(e.format())})}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e) => setTraining({
+                    ...training,
+                    startDate: new Date(e?.format()),
+                    endDate: new Date(e?.add('30', 'minutes').format())
+                  })}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa hh:mm"
+                  }}/>}
                 />}
               {matches
                 ? <DesktopDateTimePicker
                   label="Fim do treino"
-                  inputFormat="DD/MM/YYYY hh:mm"
                   ampm={false}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   value={endDate}
-                  onChange={(e) => {
-                    setTraining({...training, endDate: new Date(e.format())})
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e) => setTraining({...training, endDate: new Date(e?.format())})}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa hh:mm"
+                  }}/>}
                 />
                 : <MobileDateTimePicker
                   label="Fim do treino"
-                  inputFormat="DD/MM/YYYY hh:mm"
                   ampm={false}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   value={endDate}
-                  onChange={(e) => setTraining({...training, endDate: new Date(e.format())})}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e) => setTraining({...training, endDate: new Date(e?.format())})}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa hh:mm"
+                  }}/>}
                 />}
               <Stack direction="row" justifyContent='right' width='100%'>
                 <Button onClick={handleSubmit} variant='contained'>{newTraining ? 'Adicionar' : 'Atualizar'}</Button>

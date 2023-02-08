@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 // @mui
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
+import {ptBR} from "@mui/x-date-pickers";
 //
 import palette from './palette';
 import shadows from './shadows';
@@ -25,6 +26,7 @@ export default function ThemeProvider({ children }) {
       typography,
       shadows: shadows(),
       customShadows: customShadows(),
+      ptBR
     }),
     []
   );

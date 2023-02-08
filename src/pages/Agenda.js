@@ -154,12 +154,12 @@ export default function Agenda() {
         </Stack>
         <Stack sx={{mb: 4}} direction='row' alignItems='start' justifyContent='space-between' >
           <Stack>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
               {matches
                 ? <DesktopDateTimePicker
                   label="Dia do treino"
-                  inputFormat="DD/MM/YYYY hh:mm"
                   value={currentStartDate}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   ampm={false}
                   onChange={(e) => {
                     setCurrentStartDate(e.format())
@@ -169,8 +169,8 @@ export default function Agenda() {
                 />
                 : <MobileDateTimePicker
                   label="Dia do treino"
-                  inputFormat="DD/MM/YYYY"
                   value={currentStartDate}
+                  inputFormat='DD/MM/YYYY HH:mm'
                   ampm={false}
                   onChange={(e) => setCurrentStartDate(e.format())}
                   renderInput={(params) => <TextField {...params} />}
