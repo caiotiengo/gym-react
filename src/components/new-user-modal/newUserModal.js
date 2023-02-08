@@ -68,9 +68,9 @@ const DocumentMaskInput = forwardRef((props, ref) => {
   return (
     <IMaskInput
       {...other}
-      mask="#00.000.000-00"
+      mask="###.###.###-##"
       definitions={{
-        '#': /[1-9]/,
+        '#': /[0-9]/,
       }}
       inputRef={ref}
       onAccept={(value) => onChange({target: {name: props.name, value}})}
@@ -190,8 +190,6 @@ const NewUserModal = (props) => {
     resetValidate()
     handleClose()
   }
-  
-  console.log(aniversario)
   
   return (
     <Modal
