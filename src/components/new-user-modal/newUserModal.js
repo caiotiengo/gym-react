@@ -110,7 +110,8 @@ const NewUserModal = (props) => {
     idade: '',
     telefone: '',
     documento: '',
-    endereco: ''
+    endereco: '',
+    aniversario: ''
   }
   const [validate, setValidate] = useState(validateInitialValues)
   
@@ -190,6 +191,8 @@ const NewUserModal = (props) => {
     handleClose()
   }
   
+  console.log(aniversario)
+  
   return (
     <Modal
       open={open}
@@ -200,7 +203,7 @@ const NewUserModal = (props) => {
           {newStudent ? 'Adicionar' : 'Atualizar'} usuário
         </Typography>
         <Paper>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
             <Box
               component='form'
               sx={{
@@ -332,18 +335,24 @@ const NewUserModal = (props) => {
                 ? <DesktopDatePicker
                   label="Data de Nascimento"
                   inputFormat="DD/MM/YYYY"
-                  value={aniversario}
+                  value={aniversario || ''}
                   onChange={(e) => {
-                    setStudent({...student, aniversario: e.format()})
+                    setStudent({...student, aniversario: e?.format()})
                   }}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa"
+                  }} />}
                 />
                 : <MobileDatePicker
                   label="Data de Nascimento"
                   inputFormat="DD/MM/YYYY"
-                  value={aniversario}
-                  onChange={(e) => setStudent({...student, aniversario: e.format()})}
-                  renderInput={(params) => <TextField {...params} />}
+                  value={aniversario || ''}
+                  onChange={(e) => setStudent({...student, aniversario: e?.format()})}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa"
+                  }} />}
                 />}
               <Stack direction="row" justifyContent='right' width='100%'>
                 <Button onClick={handleSubmit} variant='contained'>{newStudent ? 'Adicionar' : 'Atualizar'}</Button>

@@ -1,6 +1,5 @@
 import {createContext, useMemo, useState} from "react";
 import PropTypes from "prop-types";
-import dayjs from "dayjs";
 
 export const StudentsContext = createContext()
 export const StudentProvider = (props) => {
@@ -13,7 +12,7 @@ export const StudentProvider = (props) => {
     documento: '',
     endereco: '',
     status: '',
-    aniversario: dayjs(),
+    aniversario: '',
     genero: 'm',
     newStudent: true
   }
