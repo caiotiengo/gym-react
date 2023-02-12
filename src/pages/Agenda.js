@@ -7,10 +7,10 @@ import {
   Card, Chip,
   Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem,
   Modal, Popover,
-  Stack,
+  Stack,Grid,
   Table, TableBody, TableCell,
   TableContainer, TableRow, TextField,
-  Typography
+  Typography, CardContent
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
@@ -22,6 +22,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {DesktopDateTimePicker, MobileDateTimePicker} from "@mui/x-date-pickers";
+import useHorarios from '../hooks/horarios/useHorarios';
 import useAgenda from "../hooks/agenda/useAgenda";
 import Scrollbar from "../components/scrollbar/Scrollbar";
 import {UserListHead} from "../sections/@dashboard/user";
@@ -29,6 +30,7 @@ import USERLIST from "../_mock/user";
 import Iconify from "../components/iconify";
 import useTraining from "../hooks/training/useTraining";
 import NewTrainingModal from "../components/new-training-modal";
+import { getHorarios, updateHorarios } from '../services/agenda';
 
 const TABLE_HEAD = [
   {id: 'nome', label: 'Nome do aluno', alignRight: false},
@@ -65,10 +67,14 @@ const SuccessMessage = (props) => {
 }
 
 export default function Agenda() {
+
+
+
+  const [limitTraining, setLimitTraining] = useState(18) // adicionar o limite aqui
+  const [diaSemana, setDiaSemana] = useState()
   const [open, setOpen] = useState(null);
   const [currentStartDate, setCurrentStartDate] = useState(new Date().setHours(0,0,0,0))
   const [currentEndDate, setCurrentEndDate] = useState(new Date().setHours(23,59,0,0))
-  const [limitTraining, setLimitTraining] = useState(20)
   const {agenda, fetchAgenda, addNewAppointment, editAppointment, removeAppointment} = useAgenda({startDate: currentStartDate, endDate: currentEndDate})
   const [openSuccessCreatedModal, setOpenSuccessCreatedModal] = useState(false)
   const [openSuccessRemoveModal, setOpenSuccessRemoveModal] = useState(false)
@@ -82,8 +88,211 @@ export default function Agenda() {
   useEffect(() => {
     fetchAgenda({startDate: currentStartDate, endDate: currentEndDate})
     // eslint-disable-next-line
+    getHora();
+
   }, [currentStartDate, currentEndDate])
+
+  const getHora = () =>{
+    Promise.all([getHorarios()]).then((snap) => {
+      const horarios = snap[0];
+      const hoje = new Date(currentStartDate);
+      const idWeek = hoje.getDay();
+
+
+      // Bloco para comparação e verificação de limites de horarios
+      if(idWeek === 0 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '7' && x.horarios === hours);
+          console.log(horarioFiltrado)
+          console.log(hours)
+
+          setDiaSemana(horarioFiltrado[0]);
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '7' && x.horarios ===  hours)
+          console.log(horarioFiltrado)
+          console.log(hours)
+          setDiaSemana(horarioFiltrado[0]);
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+      }else if(idWeek === 1 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '1' && x.horarios === hours);
+          console.log(horarioFiltrado)
+          console.log(hours)
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '1' && x.horarios ===  hours)
+          console.log(horarioFiltrado)
+          console.log(hours)
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18);
+        }
   
+      }else if(idWeek === 2 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '2' && x.horarios === hours);
+          setDiaSemana(horarioFiltrado[0]);
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '2' && x.horarios ===  hours);
+          setDiaSemana(horarioFiltrado[0]);
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+  
+      }else if(idWeek === 3 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '3' && x.horarios === hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '3' && x.horarios ===  hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+  
+      }else if(idWeek === 4 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '4' && x.horarios === hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '4' && x.horarios ===  hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+  
+      }else if(idWeek === 5 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '5' && x.horarios === hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '5' && x.horarios ===  hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+  
+      }else if(idWeek === 6 && hoje.getHours() !== 0){
+        if(hoje.getMinutes().toLocaleString() === '0'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}0`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '6' && x.horarios === hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+        }else if(hoje.getMinutes().toLocaleString() === '30'){
+          const initialZero = `0${hoje.getHours().toLocaleString()}`;
+          const hours =  `${initialZero.slice(-2)}:${hoje.getMinutes().toLocaleString()}`;
+          const horarioFiltrado = horarios.filter(x => x.idSemana === '6' && x.horarios ===  hours);
+          setDiaSemana(horarioFiltrado[0]);
+
+          console.log(horarioFiltrado[0]?.maxPessoas, horarioFiltrado[0]?.diaSemana);
+          setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
+
+        }else{
+          setLimitTraining(18)
+        }
+      }else{
+        setLimitTraining(18)
+      }
+
+
+      // bloco para atualização de horários vazios
+      horarios.forEach((h) =>{
+        if(h.diaBloqueado !== 'vazio'){
+          const modifyDate = h.diaBloqueado.split('/');
+          const dataBloqueada = new Date(+modifyDate[2], modifyDate[1] - 1, +modifyDate[0]);
+          console.log(hoje);
+          console.log(h.diaBloqueado);
+          console.log(dataBloqueada);
+          if(dataBloqueada.toLocaleDateString("pt-BR") < hoje.toLocaleDateString("pt-BR") ){
+            const body ={
+              bloqueado: h.bloqueado,
+              diaBloqueado:'vazio',
+              diaSemana:h.diaSemana,
+              horarios:h.horarios,
+              idSemana:h.idSemana,
+              maxPessoas:h.maxPessoas,
+              qtdPessoas:'0'
+             }
+             console.log(body)
+             updateHorarios(body,h.id);
+
+          }
+        }else{
+          // blo
+        }
+      })
+    })
+  }
+
   const disableNewTrainings = agenda.length >= limitTraining
   
   const handleOpenMenu = (event, index) => {
@@ -99,7 +308,47 @@ export default function Agenda() {
     resetValues()
     setOpenNewTrainingModal(true)
   }
-  
+  const horariosUpdate = (valorLimite) =>{
+    const body ={
+    bloqueado: diaSemana.bloqueado,
+    diaBloqueado:diaSemana.diaBloqueado,
+    diaSemana:diaSemana.diaSemana,
+    horarios:diaSemana.horarios,
+    idSemana:diaSemana.idSemana,
+    maxPessoas:String(valorLimite),
+    qtdPessoas:diaSemana.qtdPessoas
+   }
+   updateHorarios(body,diaSemana.id)
+  }
+  const bloquearHorario = () => {
+    const data = new Date(currentStartDate);
+    const body ={
+      bloqueado: diaSemana.bloqueado,
+      diaBloqueado:data.toLocaleDateString("pt-BR"),
+      diaSemana:diaSemana.diaSemana,
+      horarios:diaSemana.horarios,
+      idSemana:diaSemana.idSemana,
+      maxPessoas:diaSemana.maxPessoas,
+      qtdPessoas:String(agenda.length)
+     }
+     updateHorarios(body,diaSemana.id);
+     alert('Horário bloqueado.');
+  }
+  const desbloquearHorario = () => {
+    const data = new Date(currentStartDate);
+    const body ={
+      bloqueado: diaSemana.bloqueado,
+      diaBloqueado:'vazio',
+      diaSemana:diaSemana.diaSemana,
+      horarios:diaSemana.horarios,
+      idSemana:diaSemana.idSemana,
+      maxPessoas:diaSemana.maxPessoas,
+      qtdPessoas:String(agenda.length)
+     }
+     updateHorarios(body,diaSemana.id);
+     alert('Horário desbloqueado.');
+
+  }
   const handleEdit = () => {
     setTraining({
       ...currentTraining,
@@ -153,14 +402,17 @@ export default function Agenda() {
           <Button disabled={disableNewTrainings} variant='contained' onClick={handleNewTraining} >Adicionar treino</Button>
         </Stack>
         <Stack sx={{mb: 4}} direction='row' alignItems='start' justifyContent='space-between' >
-          <Stack>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
+          <Stack style={{margin:20}} >
+            <LocalizationProvider  dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
               {matches
-                ? <DesktopDateTimePicker
+                ? <DesktopDateTimePicker 
                   label="Dia do treino"
                   value={currentStartDate}
                   inputFormat='DD/MM/YYYY HH:mm'
                   ampm={false}
+                  shouldDisableTime={(timeValue, clockType) => {
+                    return clockType === "minutes" && timeValue !== 30 && timeValue !== 0;
+                  }}
                   onChange={(e) => {
                     setCurrentStartDate(e.format())
                     setCurrentEndDate(e.add(30, 'minute').format())
@@ -175,26 +427,41 @@ export default function Agenda() {
                   onChange={(e) => setCurrentStartDate(e.format())}
                   renderInput={(params) => <TextField {...params} />}
                 />}
-              <Button onClick={() => {
+              <Button style={{margin:5}} onClick={() => {
                 setCurrentStartDate(new Date(currentStartDate).setHours(0,0,0,0))
                 setCurrentEndDate(new Date(currentEndDate).setHours(23,59,0,0))
               }}>Mostrar todos os treinos do dia</Button>
             </LocalizationProvider>
           </Stack>
           <Stack>
-            <Typography variant="p">
-              Alunos para {moment(currentStartDate).calendar()}
-            </Typography>
-            <Chip color='primary' label={agenda.length} />
+            <Card >
+              <CardContent>
+                <Typography fontSize={18}>
+                  {agenda.length}
+                </Typography>
+                Alunos para {moment(currentStartDate).calendar()}
+              </CardContent>
+            </Card>
+
           </Stack>
-          <Stack>
+          <Stack style={{margin:20}} >
             <TextField
               id='limit'
               label='Limite de treinos por hora'
               type='number'
               value={limitTraining}
-              onChange={(e) => setLimitTraining(e.target.value)}
+              onChange={(e) => {horariosUpdate(e.target.value); setLimitTraining(e.target.value)}}
             />
+            <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 4}}>
+              <Grid item mb={6}>
+                <Button style={{margin:5}} onClick={() => { bloquearHorario() }} >Bloquear horário</Button>
+              </Grid>
+              <Grid item mb={6}>
+                <Button style={{margin:5}} onClick={() => { desbloquearHorario() }} >Desbloquear horário</Button>
+              </Grid>
+            </Grid>
+           
+
           </Stack>
         </Stack>
         <Card>
@@ -286,7 +553,7 @@ export default function Agenda() {
         <DialogTitle>Remover Treino</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Tem certeza que deseja o treino de {currentTraining?.aluno} ?
+            Tem certeza que deseja remover o treino de {currentTraining?.aluno} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

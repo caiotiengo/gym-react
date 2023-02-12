@@ -18,12 +18,12 @@ export default function useAgenda(date)  {
     await deleteAppointment(id)
     await fetchAgenda(date)
   }
-  
+
   return {
     agenda,
     fetchAgenda,
     addNewAppointment,
     editAppointment,
-    removeAppointment,
+    removeAppointment
   }
 }
