@@ -9,6 +9,11 @@ import KeyIcon from '@mui/icons-material/Key';
 
 const navConfig = [
   {
+    title: 'Agenda',
+    path: '/dashboard/agenda',
+    icon: <EventAvailableIcon />,
+  },
+  {
     title: 'Alunos',
     path: '/dashboard/students',
     icon: <AccountBoxIcon />,
@@ -23,11 +28,7 @@ const navConfig = [
     path: '/dashboard/reports',
     icon: <ContactMailIcon />,
   },
-  {
-    title: 'Agenda',
-    path: '/dashboard/agenda',
-    icon: <EventAvailableIcon />,
-  },
+
   {
     title: 'Catraca',
     path: '/dashboard/gate',

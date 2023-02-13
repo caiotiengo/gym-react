@@ -71,7 +71,8 @@ export default function Agenda() {
 
 
   const [limitTraining, setLimitTraining] = useState(18) // adicionar o limite aqui
-  const [diaSemana, setDiaSemana] = useState()
+  const [diaSemana, setDiaSemana] = useState();
+  const [horariosBlock, setHorariosBlock] = useState();
   const [open, setOpen] = useState(null);
   const [currentStartDate, setCurrentStartDate] = useState(new Date().setHours(0,0,0,0))
   const [currentEndDate, setCurrentEndDate] = useState(new Date().setHours(23,59,0,0))
@@ -269,9 +270,6 @@ export default function Agenda() {
         if(h.diaBloqueado !== 'vazio'){
           const modifyDate = h.diaBloqueado.split('/');
           const dataBloqueada = new Date(+modifyDate[2], modifyDate[1] - 1, +modifyDate[0]);
-          console.log(hoje);
-          console.log(h.diaBloqueado);
-          console.log(dataBloqueada);
           if(dataBloqueada.toLocaleDateString("pt-BR") < hoje.toLocaleDateString("pt-BR") ){
             const body ={
               bloqueado: h.bloqueado,
@@ -282,9 +280,7 @@ export default function Agenda() {
               maxPessoas:h.maxPessoas,
               qtdPessoas:'0'
              }
-             console.log(body)
              updateHorarios(body,h.id);
-
           }
         }else{
           // blo
@@ -401,7 +397,17 @@ export default function Agenda() {
           </Typography>
           <Button disabled={disableNewTrainings} variant='contained' onClick={handleNewTraining} >Adicionar treino</Button>
         </Stack>
-        <Stack sx={{mb: 4}} direction='row' alignItems='start' justifyContent='space-between' >
+        <Stack sx={{margin: 2}} direction='row' alignItems='start' justifyContent='space-between'>
+            <Card>
+              <CardContent>
+                <Typography fontSize={18}>
+                  {agenda.length}
+                </Typography>
+                Alunos para {moment(currentStartDate).calendar()}
+              </CardContent>
+            </Card>
+          </Stack>
+        <Stack sx={{mb: 4}} direction='row' alignItems='start' >
           <Stack style={{margin:20}} >
             <LocalizationProvider  dateAdapter={AdapterDayjs} adapterLocale='pt-BR'>
               {matches
@@ -432,17 +438,6 @@ export default function Agenda() {
                 setCurrentEndDate(new Date(currentEndDate).setHours(23,59,0,0))
               }}>Mostrar todos os treinos do dia</Button>
             </LocalizationProvider>
-          </Stack>
-          <Stack>
-            <Card >
-              <CardContent>
-                <Typography fontSize={18}>
-                  {agenda.length}
-                </Typography>
-                Alunos para {moment(currentStartDate).calendar()}
-              </CardContent>
-            </Card>
-
           </Stack>
           <Stack style={{margin:20}} >
             <TextField

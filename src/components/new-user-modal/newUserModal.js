@@ -101,7 +101,8 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
-    genero
+    genero,
+    planos
   } = student
   
   const validateInitialValues = {

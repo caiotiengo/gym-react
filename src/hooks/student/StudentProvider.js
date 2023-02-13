@@ -15,7 +15,7 @@ export const StudentProvider = (props) => {
     aniversario: '',
     genero: 'm',
     newStudent: true
-  }
+    }
   const [student, setStudent] = useState(initialValues)
 
   const resetValues = () => {
