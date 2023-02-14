@@ -162,8 +162,8 @@ export default function Agenda() {
                   inputFormat='DD/MM/YYYY HH:mm'
                   ampm={false}
                   onChange={(e) => {
-                    setCurrentStartDate(e.format())
-                    setCurrentEndDate(e.add(30, 'minute').format())
+                    setCurrentStartDate(e?.format())
+                    setCurrentEndDate(e?.add(30, 'minute').format())
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -172,7 +172,7 @@ export default function Agenda() {
                   value={currentStartDate}
                   inputFormat='DD/MM/YYYY HH:mm'
                   ampm={false}
-                  onChange={(e) => setCurrentStartDate(e.format())}
+                  onChange={(e) => setCurrentStartDate(e?.format())}
                   renderInput={(params) => <TextField {...params} />}
                 />}
               <Button onClick={() => {

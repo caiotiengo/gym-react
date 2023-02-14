@@ -28,14 +28,22 @@ const queryStudentsSuggestion = (name) => query(usersCollection,
   where("admin", "==", false),
   orderBy('nome'),
   startAt(capitalizeFirstLetter(name)),
+  endAt(`${name}\uf8ff`)
+);
+
+const queryStudentsFind = (name) => query(usersCollection,
+  where("admin", "==", false),
+  orderBy('nome'),
+  startAt(capitalizeFirstLetter(name)),
   endAt(`${name}\uf8ff`),
   limit(pageLimit)
 );
 
+
 export const findStudents = async (name) => {
   const students = []
   
-  const querySnapshot = await getDocs(queryStudentsSuggestion(name));
+  const querySnapshot = await getDocs(queryStudentsFind(name));
   querySnapshot.forEach((doc) => {
     students.push({id: doc.id, ...doc.data()});
   });
@@ -132,6 +140,7 @@ export const suggestStudent = async (name) => {
   const students = []
   const querySnapshot = await getDocs(queryStudentsSuggestion(name));
   querySnapshot.forEach((doc) => {
+    console.log(doc.data())
     students.push({id: doc.id, label: doc.data().nome});
   });
   
