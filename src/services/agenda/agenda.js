@@ -11,12 +11,13 @@ import {
 import { db } from '../../utils/firebase'
 
 const agendaCollection = collection(db, "agenda")
+const horariosCollection = collection(db, "horarios")
 
 const queryAgendaByDate = (({startDate, endDate}) => query(agendaCollection,
     where('horarioInicio', ">=", new Date(startDate)),
     where('horarioInicio', "<", new Date(endDate)))
 );
-
+const queryHorarios = query(horariosCollection);
 export const getAgenda = async (date) => {
   const agenda = []
   const querySnapshot = await getDocs(queryAgendaByDate(date));
@@ -33,6 +34,21 @@ export const getAgenda = async (date) => {
     });
   });
   return agenda
+}
+export const getHorarios = async () =>{
+  const horarios = [];
+  const querySnapshot = await getDocs(queryHorarios);
+  querySnapshot.forEach((doc) => {
+    horarios.push({
+      id: doc.id,
+      ...doc.data()
+    });
+  });
+  return horarios
+}
+export const updateHorarios = async (horario, id) => {
+  const horaRef = doc(db, 'horarios', id)
+  await updateDoc(horaRef, horario);
 }
 
 export const addAppointment = async (appointment) => {

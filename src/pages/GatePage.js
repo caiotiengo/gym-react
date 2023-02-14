@@ -70,19 +70,6 @@ export default function GatePage() {
               Desbloquear Catraca
             </Button>
           </Stack>
-  
-          <Stack direction="row" alignItems="center" justifyContent="space-between" >
-            <TextField
-              sx={{alignSelf: 'right', marginRight: 3}}
-              size='small'
-              id='nome'
-              type='number'
-              label='Quantidade de pessoas'
-            />
-            <Button sx={{alignSelf: 'right'}} variant="contained" >
-              Salvar
-            </Button>
-          </Stack>
         </Stack>
         <Paper>
           <Box sx={{height: 400, width: '100%'}}>
