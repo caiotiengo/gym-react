@@ -140,7 +140,6 @@ export const suggestStudent = async (name) => {
   const students = []
   const querySnapshot = await getDocs(queryStudentsSuggestion(name));
   querySnapshot.forEach((doc) => {
-    console.log(doc.data())
     students.push({id: doc.id, label: doc.data().nome});
   });
   
