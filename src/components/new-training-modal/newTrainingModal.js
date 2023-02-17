@@ -71,7 +71,13 @@ const NewTrainingModal = (props) => {
   };
   
   const handleSubmit = async () => {
-    await handleAction(training)
+    const currentTraining = training
+    
+    if (!training.aluno || training.aluno === '') {
+      currentTraining.aluno = studentName
+    }
+    
+    await handleAction(currentTraining)
     
     resetValues()
     handleClose()
@@ -108,13 +114,17 @@ const NewTrainingModal = (props) => {
                 }}
               />
               <Autocomplete
+                freeSolo
                 disablePortal
                 id="aluno"
                 options={studentsSuggestion}
                 value={aluno}
                 inputValue={studentName}
                 onChange={(e, newValue) => onStudentCustomFieldChange(newValue)}
-                onInputChange={(e, newInputValue) => setStudentName(newInputValue)}
+                onInputChange={async(e, newInputValue) => {
+                  setStudentName(newInputValue)
+                  await onStudentCustomFieldChange(newInputValue)
+                }}
                 renderInput={(params) => <TextField
                   placeholder='Selecione um aluno'
                   {...params}
