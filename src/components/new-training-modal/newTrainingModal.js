@@ -61,7 +61,8 @@ const NewTrainingModal = (props) => {
   
   
   const onStudentCustomFieldChange = async (nextValue) => {
-    const studentsSuggestion = await getStudentsSuggestion(nextValue?.label || '')
+    console.log(nextValue)
+    const studentsSuggestion = await getStudentsSuggestion(nextValue?.label || nextValue)
     setStudentsSuggestion(studentsSuggestion)
     setTraining({
       ...training,
@@ -124,6 +125,14 @@ const NewTrainingModal = (props) => {
                 onInputChange={async(e, newInputValue) => {
                   setStudentName(newInputValue)
                   await onStudentCustomFieldChange(newInputValue)
+                }}
+                renderOption={(props, option, index) => {
+                  const key = `listItem-${index}-${option.id}`;
+                  return (
+                    <li {...props} key={key}>
+                      {option.label}
+                    </li>
+                  );
                 }}
                 renderInput={(params) => <TextField
                   placeholder='Selecione um aluno'
