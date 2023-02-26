@@ -67,9 +67,6 @@ const SuccessMessage = (props) => {
 }
 
 export default function Agenda() {
-
-
-
   const [limitTraining, setLimitTraining] = useState(18) // adicionar o limite aqui
   const [diaSemana, setDiaSemana] = useState();
   const [horariosBlock, setHorariosBlock] = useState();
@@ -395,7 +392,7 @@ export default function Agenda() {
           <Typography variant="h4">
             Agenda
           </Typography>
-          <Button disabled={disableNewTrainings} variant='contained' onClick={handleNewTraining} >Adicionar treino</Button>
+          <Button variant='contained' onClick={handleNewTraining} >Adicionar treino</Button>
         </Stack>
         <Stack sx={{margin: 2}} direction='row' alignItems='start' justifyContent='space-between'>
             <Card>
