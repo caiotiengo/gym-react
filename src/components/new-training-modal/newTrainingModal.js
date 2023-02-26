@@ -41,7 +41,7 @@ const NewTrainingModal = (props) => {
   const {suggestion: getStudentsSuggestion} = useStudents()
   const [studentsSuggestion, setStudentsSuggestion] = useState([])
   const [studentName, setStudentName] = useState('')
-  
+
   useEffect(() => {
     const getSuggestion = async () => {
       const studentSuggestion = await getStudentsSuggestion(training.aluno)
@@ -61,14 +61,19 @@ const NewTrainingModal = (props) => {
   
   
   const onStudentCustomFieldChange = async (nextValue) => {
-    console.log(nextValue)
-    const studentsSuggestion = await getStudentsSuggestion(nextValue?.label || nextValue)
-    setStudentsSuggestion(studentsSuggestion)
-    setTraining({
-      ...training,
-      aluno: nextValue?.label ? studentsSuggestion[0].label : '',
-      idAluno: nextValue?.label ? studentsSuggestion[0].id : ''
-    })
+    if(nextValue.label) {
+      const studentsSuggestion = await getStudentsSuggestion(nextValue?.label)
+      setStudentsSuggestion(studentsSuggestion)
+      const selectedStudent = studentsSuggestion.filter(suggestion => suggestion.label === nextValue.label)
+      setTraining({
+        ...training,
+        aluno: selectedStudent.label || '',
+        idAluno: selectedStudent.id || ''
+      })
+    } else {
+      const studentsSuggestion = await getStudentsSuggestion(nextValue)
+      setStudentsSuggestion(studentsSuggestion)
+    }
   };
   
   const handleSubmit = async () => {
