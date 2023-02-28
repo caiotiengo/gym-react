@@ -82,7 +82,6 @@ export default function Agenda() {
   const matches = useMediaQuery('(min-width: 600px)')
   const {training, setTraining, resetValues} = useTraining()
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  
   useEffect(() => {
     fetchAgenda({startDate: currentStartDate, endDate: currentEndDate})
     // eslint-disable-next-line
@@ -96,7 +95,7 @@ export default function Agenda() {
       const hoje = new Date(currentStartDate);
       const idWeek = hoje.getDay();
 
-      console.log('empate')
+      
       // Bloco para comparação e verificação de limites de horarios
       if(idWeek === 0 && hoje.getHours() !== 0){
         if(hoje.getMinutes().toLocaleString() === '0'){
@@ -261,11 +260,13 @@ export default function Agenda() {
         setLimitTraining(21)
       }
 
-
       // bloco para atualização de horários vazios
       horarios.forEach((h) =>{
         const dateSelected = new Date(currentStartDate);
         const hourSelected = `${dateSelected.getHours().toLocaleString()}:${dateSelected.getMinutes().toLocaleString()}`
+       // if(h.diaBloqueado === dateSelected.toLocaleDateString("pt-BR") && hourSelected === h.horarios){
+       //   diaBlocked = true;
+       // }
         if(h.diaBloqueado !== 'vazio'){
           const modifyDate = h.diaBloqueado.split('/');
           const dataBloqueada = new Date(+modifyDate[2], modifyDate[1] - 1, +modifyDate[0]);
@@ -458,7 +459,7 @@ export default function Agenda() {
             />
             <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 4}}>
               <Grid item mb={6}>
-                <Button style={{margin:5}} onClick={() => { bloquearHorario() }} >Bloquear horário</Button>
+                <Button  style={{margin:5}} onClick={() => { bloquearHorario() }} >Bloquear horário</Button>
               </Grid>
               <Grid item mb={6}>
                 <Button style={{margin:5}} onClick={() => { desbloquearHorario() }} >Desbloquear horário</Button>
