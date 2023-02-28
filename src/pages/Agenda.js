@@ -67,7 +67,7 @@ const SuccessMessage = (props) => {
 }
 
 export default function Agenda() {
-  const [limitTraining, setLimitTraining] = useState(18) // adicionar o limite aqui
+  const [limitTraining, setLimitTraining] = useState(21) // adicionar o limite aqui
   const [diaSemana, setDiaSemana] = useState();
   const [horariosBlock, setHorariosBlock] = useState();
   const [open, setOpen] = useState(null);
@@ -96,7 +96,7 @@ export default function Agenda() {
       const hoje = new Date(currentStartDate);
       const idWeek = hoje.getDay();
 
-
+      console.log('empate')
       // Bloco para comparação e verificação de limites de horarios
       if(idWeek === 0 && hoje.getHours() !== 0){
         if(hoje.getMinutes().toLocaleString() === '0'){
@@ -120,7 +120,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
       }else if(idWeek === 1 && hoje.getHours() !== 0){
         if(hoje.getMinutes().toLocaleString() === '0'){
@@ -147,7 +147,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18);
+          setLimitTraining(21);
         }
   
       }else if(idWeek === 2 && hoje.getHours() !== 0){
@@ -167,7 +167,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
   
       }else if(idWeek === 3 && hoje.getHours() !== 0){
@@ -189,7 +189,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
   
       }else if(idWeek === 4 && hoje.getHours() !== 0){
@@ -211,7 +211,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
   
       }else if(idWeek === 5 && hoje.getHours() !== 0){
@@ -233,7 +233,7 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
   
       }else if(idWeek === 6 && hoje.getHours() !== 0){
@@ -255,32 +255,43 @@ export default function Agenda() {
           setLimitTraining(Number(horarioFiltrado[0]?.maxPessoas))
 
         }else{
-          setLimitTraining(18)
+          setLimitTraining(21)
         }
       }else{
-        setLimitTraining(18)
+        setLimitTraining(21)
       }
 
 
       // bloco para atualização de horários vazios
       horarios.forEach((h) =>{
+        const dateSelected = new Date(currentStartDate);
+        const hourSelected = `${dateSelected.getHours().toLocaleString()}:${dateSelected.getMinutes().toLocaleString()}`
         if(h.diaBloqueado !== 'vazio'){
           const modifyDate = h.diaBloqueado.split('/');
           const dataBloqueada = new Date(+modifyDate[2], modifyDate[1] - 1, +modifyDate[0]);
           if(dataBloqueada.toLocaleDateString("pt-BR") < hoje.toLocaleDateString("pt-BR") ){
             const body ={
               bloqueado: h.bloqueado,
+              diaBloqueado:h.diaBloqueado,
+              diaSemana:h.diaSemana,
+              horarios:h.horarios,
+              idSemana:h.idSemana,
+              maxPessoas:h.maxPessoas,
+              qtdPessoas: h.qtdPessoas === 'NaN' ? String(agenda.length) : h.qtdPessoas === '0' ? '0' : h.qtdPessoas
+             }
+             updateHorarios(body,h.id);
+          }
+        }else if(h.diaBloqueado === 'vazio' && hourSelected === h.horarios){
+          const body ={
+              bloqueado: h.bloqueado,
               diaBloqueado:'vazio',
               diaSemana:h.diaSemana,
               horarios:h.horarios,
               idSemana:h.idSemana,
               maxPessoas:h.maxPessoas,
-              qtdPessoas:'0'
+              qtdPessoas: h.qtdPessoas === 'NaN' ? String(agenda.length) : h.qtdPessoas === '0' ? '0' : h.qtdPessoas
              }
              updateHorarios(body,h.id);
-          }
-        }else{
-          // blo
         }
       })
     })
@@ -302,6 +313,7 @@ export default function Agenda() {
     setOpenNewTrainingModal(true)
   }
   const horariosUpdate = (valorLimite) =>{
+    console.log(diaSemana.qtdPessoas)
     const body ={
     bloqueado: diaSemana.bloqueado,
     diaBloqueado:diaSemana.diaBloqueado,
@@ -309,7 +321,7 @@ export default function Agenda() {
     horarios:diaSemana.horarios,
     idSemana:diaSemana.idSemana,
     maxPessoas:String(valorLimite),
-    qtdPessoas:diaSemana.qtdPessoas
+    qtdPessoas:String(agenda.length)
    }
    updateHorarios(body,diaSemana.id)
   }
@@ -397,7 +409,7 @@ export default function Agenda() {
         <Stack sx={{margin: 2}} direction='row' alignItems='start' justifyContent='space-between'>
             <Card>
               <CardContent>
-                <Typography fontSize={18}>
+                <Typography fontSize={21}>
                   {agenda.length}
                 </Typography>
                 Alunos para {moment(currentStartDate).calendar()}
