@@ -314,17 +314,34 @@ export default function Agenda() {
     setOpenNewTrainingModal(true)
   }
   const horariosUpdate = (valorLimite) =>{
-    console.log(diaSemana.qtdPessoas)
+    if(agenda.length >= Number(valorLimite)){
+      console.log(diaSemana.diaBloqueado)
+
+      const body ={
+        bloqueado: diaSemana.bloqueado,
+        diaBloqueado:diaSemana.diaBloqueado,
+        diaSemana:diaSemana.diaSemana,
+        horarios:diaSemana.horarios,
+        idSemana:diaSemana.idSemana,
+        maxPessoas:String(valorLimite),
+        qtdPessoas:String(agenda.length)
+    }
+    updateHorarios(body,diaSemana.id)
+
+    
+   }else{
     const body ={
-    bloqueado: diaSemana.bloqueado,
-    diaBloqueado:diaSemana.diaBloqueado,
-    diaSemana:diaSemana.diaSemana,
-    horarios:diaSemana.horarios,
-    idSemana:diaSemana.idSemana,
-    maxPessoas:String(valorLimite),
-    qtdPessoas:String(agenda.length)
+      bloqueado: diaSemana.bloqueado,
+      diaBloqueado:'vazio',
+      diaSemana:diaSemana.diaSemana,
+      horarios:diaSemana.horarios,
+      idSemana:diaSemana.idSemana,
+      maxPessoas:String(valorLimite),
+      qtdPessoas:String(agenda.length)
+    }
+    updateHorarios(body,diaSemana.id)
+
    }
-   updateHorarios(body,diaSemana.id)
   }
   const bloquearHorario = () => {
     const data = new Date(currentStartDate);

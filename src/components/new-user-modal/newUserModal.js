@@ -101,10 +101,12 @@ const NewUserModal = (props) => {
     documento,
     endereco,
     aniversario,
+    dataEntrada,
+    dataSaida,
     genero,
     planos
   } = student
-  
+  console.log(student);
   const validateInitialValues = {
     nome: '',
     email: '',
@@ -183,9 +185,13 @@ const NewUserModal = (props) => {
     if (!validateEndereco(endereco)) return
     
     if (newStudent) {
-      await addStudent(student)
+      await addStudent(student);
+      alert('Usuário adicionado com sucesso.');
+
     } else {
-      await editStudent(student)
+      await editStudent(student);
+      alert('Usuário editado com sucesso.');
+
     }
     resetValues()
     resetValidate()
@@ -353,6 +359,36 @@ const NewUserModal = (props) => {
                     placeholder: "dd/mm/aaaa"
                   }} />}
                 />}
+                {newStudent
+                ?  ''
+                : <DesktopDatePicker
+                label="Data de entrada"
+                inputFormat="DD/MM/YYYY"
+                value={dataEntrada || ''}
+                onChange={(e) => {
+                  setStudent({...student, dataEntrada: e?.format()})
+                }}
+                renderInput={(params) => <TextField {...params} inputProps={{
+                  ...params.inputProps,
+                  placeholder: "dd/mm/aaaa"
+                }} />}
+              />}
+
+                {newStudent
+                ? '' : <DesktopDatePicker
+                  label="Data de saída"
+                  inputFormat="DD/MM/YYYY"
+                  value={dataSaida || ''}
+                  onChange={(e) => {
+                    setStudent({...student, dataSaida: e?.format()})
+                  }}
+                  renderInput={(params) => <TextField {...params} inputProps={{
+                    ...params.inputProps,
+                    placeholder: "dd/mm/aaaa"
+                  }} />}
+                />
+                } 
+                
               <Stack direction="row" justifyContent='right' width='100%'>
                 <Button onClick={handleSubmit} variant='contained'>{newStudent ? 'Adicionar' : 'Atualizar'}</Button>
               </Stack>

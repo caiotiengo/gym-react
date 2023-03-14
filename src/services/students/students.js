@@ -97,7 +97,9 @@ export const addStudent = async (student) => {
     admin: false,
     status: '',
     biometria:false,
-    idUserCatraca: ''
+    idUserCatraca: '',
+    dataEntrada: new Date().toISOString(),
+    dataSaida: ''
   }).then(async docRef => {
     await setDoc(doc(usersCollection,docRef.id),{
         ...student,
@@ -105,7 +107,10 @@ export const addStudent = async (student) => {
         admin: false,
         status: '',
         biometria:false,
-        idUserCatraca: ''
+        idUserCatraca: '',
+        dataEntrada: new Date().toISOString(),
+        dataSaida: ''
+
       });
       await createReport(student, docRef.id);
 

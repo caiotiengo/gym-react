@@ -18,6 +18,7 @@ const queryAgendaByDate = (({startDate, endDate}) => query(agendaCollection,
     where('horarioInicio', "<", new Date(endDate)))
 );
 const queryHorarios = query(horariosCollection);
+const queryAgendaCheia = query(agendaCollection);
 export const getAgenda = async (date) => {
   const agenda = []
   const querySnapshot = await getDocs(queryAgendaByDate(date));
@@ -31,6 +32,17 @@ export const getAgenda = async (date) => {
       professor: doc.data().nomeProfessor,
       idProfessor: doc.data().idProfessor,
       idAluno: doc.data().idAluno
+    });
+  });
+  return agenda
+}
+export const getFullAgenda = async () => {
+  const agenda = []
+  const querySnapshot = await getDocs(queryAgendaCheia);
+  querySnapshot.forEach((doc) => {
+    agenda.push({
+      id: doc.id,
+      ...doc.data()
     });
   });
   return agenda

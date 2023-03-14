@@ -27,12 +27,6 @@ const navConfig = [
     title: 'Relatórios',
     path: '/dashboard/reports',
     icon: <ContactMailIcon />,
-  },
-
-  {
-    title: 'Catraca',
-    path: '/dashboard/gate',
-    icon: <KeyIcon />,
   }
 ];
 

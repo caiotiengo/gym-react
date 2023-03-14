@@ -28,6 +28,7 @@ import useStudents from "../hooks/students/useStudents";
 import NewUserModal from "../components/new-user-modal";
 import NewTreinamentoModal from "../components/new-treinamento-modal";
 import useStudent from "../hooks/student/useStudent";
+import { lockGate } from '../services/gate';
 
 // ----------------------------------------------------------------------
 
@@ -144,7 +145,7 @@ export default function UserPage() {
             Adicionar aluno
           </Button>
         </Stack>
-        
+
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Paper
             component="form"
@@ -163,7 +164,16 @@ export default function UserPage() {
             </IconButton>
           </Paper>
         </Stack>
-        
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Button sx={{alignSelf: 'right', marginRight: 3}} variant="contained" onClick={() => lockGate(true)}>
+              Bloquear Catraca
+            </Button>
+            <Button sx={{alignSelf: 'right'}} variant="contained" onClick={() => lockGate(false)}>
+              Desbloquear Catraca
+            </Button>
+          </Stack>
+        </Stack>
         <Card>
           <Scrollbar>
             <TableContainer sx={{minWidth: 800}}>
@@ -272,9 +282,6 @@ export default function UserPage() {
             }
         }}>
           Pagamento
-        </MenuItem>
-        <MenuItem onClick={handleOpenTreino}>
-          Adicionar Treino
         </MenuItem>
         <MenuItem onClick={handleCatracas}>
           Biometria
